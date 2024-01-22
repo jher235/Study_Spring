@@ -49,5 +49,5 @@ public class MemberController {
         model.addAttribute("members",members);
         return "members/memberList";
     }
-
+//jdbc:h2:mem:test
 }
