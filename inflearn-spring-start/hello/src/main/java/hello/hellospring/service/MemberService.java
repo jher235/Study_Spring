@@ -22,11 +22,12 @@ public class MemberService {
 
     //    회원가입
     public Long join(Member member){
-//        같은 이름이 있는 중복 회원은 안된다.
-        checkDuplicate(member);
 
+        checkDuplicate(member);
         memberRepository.save(member);
         return member.getId();
+
+
     }
 
     private void checkDuplicate(Member member) {
