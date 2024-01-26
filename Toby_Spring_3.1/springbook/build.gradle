@@ -17,6 +17,11 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
+	// https://mvnrepository.com/artifact/org.springframework/spring-core
+	implementation group: 'org.springframework', name: 'spring-core', version: '6.1.0'
+	implementation group: 'org.springframework', name: 'spring-jdbc', version: '6.1.0'
+	implementation group: 'org.springframework', name: 'spring-context', version: '6.1.0'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 

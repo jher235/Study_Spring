@@ -4,21 +4,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class DaoFactory {
+public class CountingDaoFactory {
 
     @Bean
     public UserDao userDao(){
-
         return new UserDao(connectionMaker());
     }
 
-
-    public AccountDao accountDao(){
-        return new AccountDao(connectionMaker());
+    @Bean
+    public ConnectionMaker connectionMaker(){
+        return new CountingConnectionMaker(realConnectionMaker());
     }
 
     @Bean
-    public ConnectionMaker connectionMaker() {
+    public ConnectionMaker realConnectionMaker(){
         return new MySqlConnectionMaker();
     }
+
 }
