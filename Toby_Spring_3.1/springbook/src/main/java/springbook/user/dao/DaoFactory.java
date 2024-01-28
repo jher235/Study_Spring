@@ -13,7 +13,7 @@ public class DaoFactory {
     public UserDao userDao(){
         UserDao userDao = new UserDao();        //메소드를 통한 주입
 //        userDao.setConnectionMaker(connectionMaker());
-        userDao.setDataSource();
+        userDao.setDataSource(dataSource());
         return userDao;
 
 //        return new UserDao(connectionMaker());       //생성자를 통한 주입 시
@@ -31,6 +31,13 @@ public class DaoFactory {
 
     @Bean
     public DataSource dataSource(){
-        SimpleDriverDataSource(())
+        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+
+        dataSource.setDriverClass(com.mysql.cj.jdbc.Driver.class);
+        dataSource.setUrl("jdbc:mysql://localhost/tobyspring3_1?");
+        dataSource.setUsername("root");
+        dataSource.setPassword("jher235");
+
+        return dataSource;
     }
 }

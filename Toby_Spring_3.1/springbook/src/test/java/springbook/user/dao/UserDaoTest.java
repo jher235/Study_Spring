@@ -25,7 +25,7 @@ class UserDaoTest {
 //        UserDao userDao = new UserDao(cm);
 //        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(DaoFactory.class);     //이건 daofactory를 받아옴
 
-        ApplicationContext applicationContext = new GenericXmlApplicationContext("applicationContext.xml");
+        ApplicationContext applicationContext = new GenericXmlApplicationContext("applicationContext.xml");   //이건 xml 사용
 
         UserDao userDao = applicationContext.getBean("userDao",UserDao.class);
 
