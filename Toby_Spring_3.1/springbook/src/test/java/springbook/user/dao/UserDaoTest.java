@@ -9,10 +9,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import springbook.user.domain.User;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 
 
@@ -23,12 +26,15 @@ import static  org.assertj.core.api.Assertions.*;   //AssertJ
 //@ExtendWith(SpringExtension.class)        //JUnit 5에서 사용하는 확장 모델 지정   ContextConfiguration이 설정파일을 알려주면 그걸 가져와서 적용해줌
 //@ContextConfiguration(classes = DaoFactory.class)
 @ExtendWith(SpringExtension.class)
+//@ContextConfiguration(locations ="/test_applicationContext.xml")      //방법2 xml파일을 새로 만들어서 db커넥션 설정
 @ContextConfiguration(locations ="/applicationContext.xml")
+//@DirtiesContext     //applicationContext의 구성, 상태를 변경할 것이라는 것을 알려주는 것.
 class UserDaoTest {
 
-    @Autowired
-    private ApplicationContext applicationContext;
+//    @Autowired
+//    private ApplicationContext applicationContext;
 
+//    @Autowired
     private UserDao userDao;
     private User user1;
     private User user2;
@@ -38,12 +44,24 @@ class UserDaoTest {
     @BeforeEach     //메소드 추출을 대신 JUnit5에서 제공하는 기능을 사용함
     public void setUp(){
 //        ApplicationContext applicationContext = new GenericXmlApplicationContext("applicationContext.xml");
-        System.out.println(this.applicationContext);
-        System.out.println(this);
-        this.userDao = applicationContext.getBean("userDao", UserDao.class);
+//        System.out.println(this.applicationContext);
+//        System.out.println(this);
+//        this.userDao = applicationContext.getBean("userDao", UserDao.class);
         this.user1 = new User("0","test0","test1");
         this.user2 = new User("1","test2","test2");
         this.user3 = new User("2","test3","test3");
+
+//        DataSource dataSource = new SingleConnectionDataSource(       //이건 @DirtiesContext 할때 사용 방법1.
+//                "jdbc:mysql://localhost/test_tobyspring3_1","root","jher235",true);
+//        userDao.setDataSource(dataSource);
+
+        userDao = new UserDao();
+        DataSource dataSource = new SingleConnectionDataSource(
+                "jdbc:mysql://localhost/test_tobyspring3_1","root","jher235",true);
+        userDao.setDataSource(dataSource);
+
+
+
     }
 
     @Test

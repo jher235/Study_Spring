@@ -11,7 +11,7 @@ public class UserDao {
 //    private SimpleConnectionMaker simpleConnectionMaker;
 //    private ConnectionMaker connectionMaker;
 
-    private DataSource dataSource;
+    private DataSource dataSource;      //스프링에서 제공하는 인터페이스 객체
 
     public void setDataSource(DataSource dataSource){
         this.dataSource = dataSource;
