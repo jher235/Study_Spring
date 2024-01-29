@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.2.2'
+	id 'org.springframework.boot' version '2.7.0'
 	id 'io.spring.dependency-management' version '1.1.4'
 }
 
@@ -17,17 +17,18 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
+//	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	// https://mvnrepository.com/artifact/org.springframework/spring-core
-	implementation group: 'org.springframework', name: 'spring-core', version: '6.1.0'
-	implementation group: 'org.springframework', name: 'spring-jdbc', version: '6.1.0'
-	implementation group: 'org.springframework', name: 'spring-context', version: '6.1.0'
+	implementation group: 'org.springframework', name: 'spring-core', version: '5.3.23'
+	implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.3.23'
+	implementation group: 'org.springframework', name: 'spring-context', version: '5.3.23'
+	implementation group: 'org.springframework', name: 'spring-test', version: '5.3.23'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	runtimeOnly 'com.mysql:mysql-connector-j'
 //	runtimeOnly 'com.mysql:mysql-connector-java:8.0.26'
 	// https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
 	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
-
 
 }
 

@@ -1,8 +1,10 @@
 package springbook.user.dao;
 
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -18,10 +20,31 @@ import static org.junit.jupiter.api.Assertions.*;   //JUnit
 import static  org.assertj.core.api.Assertions.*;   //AssertJ
 
 
-//@ExtendWith(SpringExtension.class)        //JUnit 5에서 사용하는 확장 모델 지정
+//@ExtendWith(SpringExtension.class)        //JUnit 5에서 사용하는 확장 모델 지정   ContextConfiguration이 설정파일을 알려주면 그걸 가져와서 적용해줌
 //@ContextConfiguration(classes = DaoFactory.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(locations ="/applicationContext.xml")
 class UserDaoTest {
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    private UserDao userDao;
+    private User user1;
+    private User user2;
+    private User user3;
+
+
+    @BeforeEach     //메소드 추출을 대신 JUnit5에서 제공하는 기능을 사용함
+    public void setUp(){
+//        ApplicationContext applicationContext = new GenericXmlApplicationContext("applicationContext.xml");
+        System.out.println(this.applicationContext);
+        System.out.println(this);
+        this.userDao = applicationContext.getBean("userDao", UserDao.class);
+        this.user1 = new User("0","test0","test1");
+        this.user2 = new User("1","test2","test2");
+        this.user3 = new User("2","test3","test3");
+    }
 
     @Test
     void addAndGet() throws SQLException, ClassNotFoundException {
@@ -29,30 +52,21 @@ class UserDaoTest {
 //        UserDao userDao = new UserDao(cm);
 //        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(DaoFactory.class);     //이건 daofactory를 받아옴
 
-        ApplicationContext applicationContext = new GenericXmlApplicationContext("applicationContext.xml");   //이건 xml 사용
+//        ApplicationContext applicationContext = new GenericXmlApplicationContext("applicationContext.xml");   //이건 xml 사용
 
-        UserDao userDao = applicationContext.getBean("userDao",UserDao.class);
-
-
+//        UserDao userDao = applicationContext.getBean("userDao",UserDao.class);
 
         userDao.deleteAll();
         assertThat(userDao.getCount()).isEqualTo(0);
 
-        User user1 = new User("0","test0","test1");
-        User user2 = new User("1","test2","test2");
+
 
         userDao.add(user1);
         userDao.add(user2);
 
         assertThat(userDao.getCount()).isEqualTo(2);
 
-
-
-
         System.out.println("현재 users 수 : "+userDao.getCount());
-
-
-
 
         User result = userDao.get(user1.getId());
         assertThat(result.getName()).isEqualTo(user1.getName());
@@ -75,9 +89,7 @@ class UserDaoTest {
         EmptyResultDataAccessException e = assertThrows(
                 EmptyResultDataAccessException.class,
                 ()->{
-                    ApplicationContext applicationContext = new GenericXmlApplicationContext("applicationContext.xml");
 
-                    UserDao userDao = applicationContext.getBean("userDao", UserDao.class);
                     userDao.deleteAll();
                     assertThat(userDao.getCount()).isEqualTo(0);
 
