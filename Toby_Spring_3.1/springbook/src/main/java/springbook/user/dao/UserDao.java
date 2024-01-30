@@ -1,6 +1,9 @@
 package springbook.user.dao;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import springbook.user.dao.statement.AddStatement;
+import springbook.user.dao.statement.DeleteAllStatement;
+import springbook.user.dao.statement.StatementStrategy;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
@@ -37,21 +40,8 @@ public class UserDao {
 //    abstract protected PreparedStatement makeStatement(Connection c) throws SQLException;       //템플릿 메소드 패턴을 위함
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-//        Connection c = getConnection();
-//        Connection c = simpleConnectionMaker.makeNewConnection();
-//        Connection c = connectionMaker.makeConnection();
-        Connection c = dataSource.getConnection();
-
-        PreparedStatement ps = c.prepareStatement(
-                "insert into users(id, name, password) values(?,?,?)");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
-
-        ps.executeUpdate();
-
-        ps.close();
-        c.close();
+        StatementStrategy st = new AddStatement(user);
+        jdbcContextWithStatementStrategy(st);
     }
 
 
