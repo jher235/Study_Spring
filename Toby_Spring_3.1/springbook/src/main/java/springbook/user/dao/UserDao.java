@@ -16,10 +16,20 @@ public class UserDao {
 
     private DataSource dataSource;      //스프링에서 제공하는 인터페이스 객체
 
+    private JdbcContext jdbcContext;
+
     public void setDataSource(DataSource dataSource){
         this.dataSource = dataSource;
+        this.jdbcContext = new JdbcContext();       //jdbcContext 생성 (ioc)
+        this.jdbcContext.setDataSource(dataSource);     //의존 오브젝트 주입(di)
+
     }
 
+
+
+//    public void setJdbcContext(JdbcContext jdbcContext){
+//        this.jdbcContext = jdbcContext;
+//    }
 
 //    public UserDao(ConnectionMaker connectionMaker) {     //생성자를 통한 주입
 ////        simpleConnectionMaker =  new  SimpleConnectionMaker();
@@ -40,7 +50,7 @@ public class UserDao {
 //    abstract protected PreparedStatement makeStatement(Connection c) throws SQLException;       //템플릿 메소드 패턴을 위함
 
     public void add(final User user) throws ClassNotFoundException, SQLException {
-        jdbcContextWithStatementStrategy(       //메소드 파라미터로 이전한 익명 내부 클래스를 사용
+        this.jdbcContext.WithStatementStrategy(       //메소드 파라미터로 이전한 익명 내부 클래스를 사용
         new StatementStrategy() {
             @Override
             public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
@@ -91,7 +101,7 @@ public class UserDao {
 
 
     public void deleteAll() throws SQLException {
-        jdbcContextWithStatementStrategy(
+        this.jdbcContext.WithStatementStrategy(
             new StatementStrategy() {
                 @Override
                 public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
@@ -100,35 +110,6 @@ public class UserDao {
             }
         );
     }
-
-    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
-        Connection c =null;
-        PreparedStatement ps =null;
-        try {
-            c = dataSource.getConnection();
-
-            ps = stmt.makePreparedStatement(c);
-
-            ps.executeUpdate();
-        }catch (SQLException e){
-            throw e;
-        }finally {
-            if(ps != null){ //null 일때 close하면 nullpointexception이 발생함
-                try {
-                    ps.close();
-                }catch(SQLException e){
-                }
-            }
-            if(c!=null){
-                try{
-                    c.close();
-                }catch (SQLException e){
-                }
-            }
-        }
-    }
-
-
 
 
     public int getCount() throws SQLException {
