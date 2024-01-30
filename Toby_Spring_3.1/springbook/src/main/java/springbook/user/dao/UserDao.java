@@ -1,7 +1,7 @@
 package springbook.user.dao;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import springbook.user.dao.statement.AddStatement;
+
 import springbook.user.dao.statement.DeleteAllStatement;
 import springbook.user.dao.statement.StatementStrategy;
 import springbook.user.domain.User;
@@ -39,9 +39,22 @@ public class UserDao {
 //    }
 //    abstract protected PreparedStatement makeStatement(Connection c) throws SQLException;       //템플릿 메소드 패턴을 위함
 
-    public void add(User user) throws ClassNotFoundException, SQLException {
-        StatementStrategy st = new AddStatement(user);
-        jdbcContextWithStatementStrategy(st);
+    public void add(final User user) throws ClassNotFoundException, SQLException {
+        jdbcContextWithStatementStrategy(       //메소드 파라미터로 이전한 익명 내부 클래스를 사용
+        new StatementStrategy() {
+            @Override
+            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                PreparedStatement ps = c.prepareStatement(
+                        "insert into users(id, name, password) values(?,?,?)");
+                ps.setString(1, user.getId());
+                ps.setString(2, user.getName());
+                ps.setString(3, user.getPassword());
+
+                return ps;
+            }
+        });
+
+
     }
 
 
@@ -78,8 +91,14 @@ public class UserDao {
 
 
     public void deleteAll() throws SQLException {
-        StatementStrategy strategy = new DeleteAllStatement();
-        jdbcContextWithStatementStrategy(strategy);
+        jdbcContextWithStatementStrategy(
+            new StatementStrategy() {
+                @Override
+                public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                    return c.prepareStatement("delete from users");
+                }
+            }
+        );
     }
 
     public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
