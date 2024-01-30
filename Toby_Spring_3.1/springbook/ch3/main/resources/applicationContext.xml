@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!--    <bean id="myConnectionMaker" class="springbook.user.dao.MySqlConnectionMaker"/>-->
+
+    <bean id="userDao" class="springbook.user.dao.UserDao">
+<!--        <property name="connectionMaker" ref="myConnectionMaker"/>-->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>     <!-- 스프링이 프로퍼티 값을 적절한 형태인 java.lang.Class 타입으로 만들어줌 -->
+        <property name="url" value="jdbc:mysql://localhost/tobyspring3_1"/>
+        <property name="username" value="root"/>
+        <property name="password" value="jher235"/>
+    </bean>
+
+
+
+</beans>
