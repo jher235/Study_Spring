@@ -28,6 +28,14 @@ public class UserDao {
 //        this.connectionMaker = connectionMaker;
 //    }
 
+//    private static PreparedStatement makeStatement(Connection c) throws SQLException {      //메소드 추출
+//        PreparedStatement ps;
+//        ps = c.prepareStatement("delete from users");
+//        return ps;
+////        return c.prepareStatement("delete from users");
+//    }
+//    abstract protected PreparedStatement makeStatement(Connection c) throws SQLException;       //템플릿 메소드 패턴을 위함
+
     public void add(User user) throws ClassNotFoundException, SQLException {
 //        Connection c = getConnection();
 //        Connection c = simpleConnectionMaker.makeNewConnection();
@@ -69,29 +77,29 @@ public class UserDao {
             user.setPassword(rs.getString("password"));
         }
 
-
-
-
         rs.close();
         ps.close();
         c.close();
 
         if (user==null)throw new EmptyResultDataAccessException(1);
 
-
-
-
         return user;
     }
 
 
     public void deleteAll() throws SQLException {
-        PreparedStatement ps = null;
-        Connection c = null;
+        StatementStrategy strategy = new DeleteAllStatement();
+        jdbcContextWithStatementStrategy(strategy);
+    }
 
+    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
+        Connection c =null;
+        PreparedStatement ps =null;
         try {
             c = dataSource.getConnection();
-            ps = c.prepareStatement("delete from users");
+
+            ps = stmt.makePreparedStatement(c);
+
             ps.executeUpdate();
         }catch (SQLException e){
             throw e;
@@ -109,10 +117,9 @@ public class UserDao {
                 }
             }
         }
-
-
-
     }
+
+
 
 
     public int getCount() throws SQLException {

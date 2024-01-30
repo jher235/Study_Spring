@@ -20,9 +20,9 @@ public class DaoFactory {
     }
 
 
-    public AccountDao accountDao(){
-        return new AccountDao(connectionMaker());
-    }
+//    public AccountDao accountDao(){
+//        return new AccountDao(connectionMaker());
+//    }
 
     @Bean
     public ConnectionMaker connectionMaker() {

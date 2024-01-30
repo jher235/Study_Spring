@@ -6,6 +6,5 @@ public class AccountDao {
     public AccountDao(ConnectionMaker connectionMaker) {
 //        simpleConnectionMaker =  new  SimpleConnectionMaker();
         this.connectionMaker = connectionMaker;
-
-    }
+   }
 }
