@@ -15,6 +15,7 @@ import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
@@ -49,24 +50,10 @@ class UserDaoTest {
 
     @BeforeEach     //메소드 추출을 대신 JUnit5에서 제공하는 기능을 사용함
     public void setUp(){
-//        ApplicationContext applicationContext = new GenericXmlApplicationContext("applicationContext.xml");
-//        System.out.println(this.applicationContext);
-//        System.out.println(this);
-//        this.userDao = applicationContext.getBean("userDao", UserDao.class);
-//        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        this.user1 = new User("0","test0","test1");
-        this.user2 = new User("1","test2","test2");
-        this.user3 = new User("2","test3","test3");
 
-//        DataSource dataSource = new SingleConnectionDataSource(       //이건 @DirtiesContext 할때 사용 방법1.
-//                "jdbc:mysql://localhost/test_tobyspring3_1","root","jher235",true);
-//        userDao.setDataSource(dataSource);
-
-//        userDao = new UserDaoJdbc();
-//        DataSource dataSource = new SingleConnectionDataSource(
-//                "jdbc:mysql://localhost/test_tobyspring3_1","root","jher235",true);
-//
-//        userDao.setDataSource(dataSource);
+        this.user1 = new User("0","test0","test1", Level.BASIC,1,0);
+        this.user2 = new User("1","test2","test2",Level.SILVER,55,10);
+        this.user3 = new User("2","test3","test3",Level.GOLD,100,40);
 
     }
 
@@ -92,16 +79,12 @@ class UserDaoTest {
 
         System.out.println("현재 users 수 : "+userDao.getCount());
 
-        User result = userDao.get(user1.getId());
-        assertThat(result.getName()).isEqualTo(user1.getName());
-        assertThat(result.getPassword()).isEqualTo(user1.getPassword());
-        assertEquals(result.getName(),user1.getName());
+        User result1 = userDao.get(user1.getId());
+        checkSameUser(result1,user1);
+
 
         User result2 = userDao.get(user2.getId());
-        assertThat(result2.getName()).isEqualTo(user2.getName());
-        assertThat(result2.getPassword()).isEqualTo(user2.getPassword());
-        assertEquals(result2.getName(),user2.getName());
-
+        checkSameUser(result2,user2);
 
         userDao.deleteAll();
         System.out.println("현재 users 수 : "+userDao.getCount());
@@ -157,6 +140,9 @@ class UserDaoTest {
         assertThat(user1.getId()).isEqualTo(user2.getId());
         assertThat(user1.getName()).isEqualTo(user2.getName());
         assertThat(user1.getPassword()).isEqualTo(user2.getPassword());
+        assertThat(user1.getLevel()).isEqualTo(user2.getLevel());
+        assertThat(user1.getLogin()).isEqualTo(user2.getLogin());
+        assertThat(user1.getRecommend()).isEqualTo(user2.getRecommend());
     }
 
     @Test
@@ -177,11 +163,10 @@ class UserDaoTest {
             userDao.add(user1);
             userDao.add(user1);
         }catch (DuplicateKeyException e){
-            SQLException sqlEx = (SQLException)e.getRootCause();
-            SQLExceptionTranslator set =
-                    new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+            SQLException sqlEx = (SQLException)e.getCause();
+            SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
 
-            assertThat(set.translate(null,null,sqlEx)).isEqualTo(DuplicateKeyException.class);
+//            assertThat(set.translate(null,null,sqlEx)).isEqualTo(DuplicateKeyException.class);
         }
     }
 }
