@@ -11,6 +11,7 @@ import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
+import javax.sql.DataSource;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +31,12 @@ class UserServiceTest {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    DataSource dataSource;
+
+    @Autowired
+    UserLevelUpgradePolicy userLevelUpgradePolicy;
+
     List<User> users;
 
     @BeforeEach
@@ -43,8 +50,25 @@ class UserServiceTest {
         );
     }
 
+    static class TestUserService extends UserService{
+        private String id;
+
+        private TestUserService(String id){
+            this.id = id;
+        }
+
+        @Override
+        protected void upgradeLevel(User user) {
+            if(user.getId().equals(this.id)) throw new TestUserServiceException();
+            super.upgradeLevel(user);
+        }
+    }
+
+    static class TestUserServiceException extends RuntimeException{
+    }
+
     @Test
-    public void upgradeLevels테스트(){
+    public void upgradeLevels테스트() throws Exception {
         userDao.deleteAll();
         for(User user: users) userDao.add(user);
 
@@ -87,5 +111,25 @@ class UserServiceTest {
         assertThat(userWithoutLevelRead.getLevel()).isEqualTo(Level.BASIC);
 
     }
+
+    @Test
+    public void upgradeAllOrNot() throws Exception{
+        UserService testUserService = new TestUserService(users.get(3).getId());
+        testUserService.setUserDao(this.userDao);
+        testUserService.setDataSource(this.dataSource);
+        testUserService.setUserLevelUpgradePolicy(this.userLevelUpgradePolicy);
+        userDao.deleteAll();
+        for(User user : users) userDao.add(user);
+
+        try{
+            testUserService.upgradeLevels();
+            fail("TestUserServiceException expected");
+        }catch (TestUserServiceException e){
+
+        }
+
+        checkLevel업글(users.get(1),false);
+    }
+
 
 }
