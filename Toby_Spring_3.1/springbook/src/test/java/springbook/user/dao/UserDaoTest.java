@@ -169,4 +169,29 @@ class UserDaoTest {
 //            assertThat(set.translate(null,null,sqlEx)).isEqualTo(DuplicateKeyException.class);
         }
     }
+
+    @Test
+    public void update(){
+        userDao.deleteAll();
+
+        userDao.add(user1);
+        userDao.add(user2);
+
+        user1.setName("김재헌");
+        user1.setPassword("wogjs");
+        user1.setLevel(Level.GOLD);
+        user1.setLogin(1000);
+        user1.setRecommend(100);
+        userDao.update(user1);
+
+        User user1update = userDao.get(user1.getId());
+        checkSameUser(user1,user1update);
+
+        User user2same = userDao.get(user2.getId());
+        checkSameUser(user2,user2same);
+
+    }
+
+
+
 }
