@@ -51,9 +51,9 @@ class UserDaoTest {
     @BeforeEach     //메소드 추출을 대신 JUnit5에서 제공하는 기능을 사용함
     public void setUp(){
 
-        this.user1 = new User("0","test0","test1", Level.BASIC,1,0);
-        this.user2 = new User("1","test2","test2",Level.SILVER,55,10);
-        this.user3 = new User("2","test3","test3",Level.GOLD,100,40);
+        this.user1 = new User("0","test0","test1","test1@tt.com",Level.BASIC,1,0);
+        this.user2 = new User("1","test2","test2","test2@tt.com",Level.SILVER,55,10);
+        this.user3 = new User("2","test3","test3","test3@tt.com",Level.GOLD,100,40);
 
     }
 
