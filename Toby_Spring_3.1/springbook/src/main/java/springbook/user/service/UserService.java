@@ -21,10 +21,16 @@ public class UserService {
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
 
-    private DataSource dataSource;
+//    private DataSource dataSource;
 
     UserDao userDao;
     UserLevelUpgradePolicy userLevelUpgradePolicy;
+
+    private PlatformTransactionManager transactionManager;
+
+    public void setTransactionManager(PlatformTransactionManager transactionManager){
+        this.transactionManager = transactionManager;
+    }
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
@@ -34,9 +40,9 @@ public class UserService {
         this.userLevelUpgradePolicy = userLevelUpgradePolicy;
     }
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+//    public void setDataSource(DataSource dataSource) {
+//        this.dataSource = dataSource;
+//    }
 
     public void upgradeLevels() throws Exception{
 //        TransactionSynchronizationManager.initSynchronization();    //트랜잭션 동기화 관리자를 이용해 동기화 작업을 초기화한다.
@@ -57,17 +63,17 @@ public class UserService {
 //            TransactionSynchronizationManager.clearSynchronization();
 //        }
 
-        PlatformTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
-        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+//        PlatformTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
+        TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
 
         try {
             List<User> users = userDao.getAll();
             for(User user : users){
                 if(canUpgradeLevel(user)) upgradeLevel(user);
             }
-            transactionManager.commit(status);
+            this.transactionManager.commit(status);
         }catch (RuntimeException e){
-            transactionManager.rollback(status);
+            this.transactionManager.rollback(status);
             throw e;
         }
 

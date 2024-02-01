@@ -7,6 +7,12 @@
     <bean id="userService" class="springbook.user.service.UserService">
         <property name="userDao" ref="userDao"/>
         <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
+<!--        <property name="dataSource" ref="dataSource"/>-->
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+<!--만약 jta로 고치고 싶다면 설정만 class="org.springframework.transaction.jta.JtaTransactionManager" 이렇게 변경하면 된다.-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
