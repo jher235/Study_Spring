@@ -1,6 +1,5 @@
 package springbook.user.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -17,7 +15,6 @@ import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,14 +22,17 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 
-import static springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static springbook.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations ="/test_applicationContext.xml")
 class UserServiceTest {
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserServiceImpl userServiceImpl;
 
     @Autowired
     UserDao userDao;
@@ -62,7 +62,7 @@ class UserServiceTest {
         );
     }
 
-    static class TestUserService extends UserService{
+    static class TestUserService extends UserServiceImpl{
         private String id;
 
         private TestUserService(String id){
@@ -103,6 +103,7 @@ class UserServiceTest {
         for(User user: users) userDao.add(user);
 
 //        MockMailSender mockMailSender = new MockMailSender();
+//        userServiceImpl.setMailSender(mockMailSender);
 //        userService.setMailSender(mockMailSender);
 
         userService.upgradeLevels();
@@ -153,17 +154,21 @@ class UserServiceTest {
 
     @Test
     public void upgradeAllOrNot() throws Exception{
-        UserService testUserService = new TestUserService(users.get(3).getId());
-        testUserService.setUserDao(this.userDao);
-//        testUserService.setDataSource(this.dataSource);
-        testUserService.setTransactionManager(transactionManager);
+        TestUserService testUserService = new TestUserService(users.get(3).getId());
+        testUserService.setUserDao(userDao);
         testUserService.setMailSender(this.mailSender);
+
+        UserServiceTx userServiceTx = new UserServiceTx();
+        userServiceTx.setTransactionManager(transactionManager);
+        userServiceTx.setUserService(testUserService);
+
+
         testUserService.setUserLevelUpgradePolicy(this.userLevelUpgradePolicy);
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
 
         try{
-            testUserService.upgradeLevels();
+            userServiceTx.upgradeLevels();
             fail("TestUserServiceException expected");
         }catch (TestUserServiceException e){
 
