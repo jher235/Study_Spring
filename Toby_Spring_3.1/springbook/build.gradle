@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 //	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	// https://mvnrepository.com/artifact/org.springframework/spring-core
 	implementation group: 'org.springframework', name: 'spring-core', version: '5.3.23'
@@ -29,6 +30,10 @@ dependencies {
 //	runtimeOnly 'com.mysql:mysql-connector-java:8.0.26'
 	// https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
 	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
+	// https://mvnrepository.com/artifact/javax.mail/javax.mail-api
+	implementation group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
+
+
 
 }
 
