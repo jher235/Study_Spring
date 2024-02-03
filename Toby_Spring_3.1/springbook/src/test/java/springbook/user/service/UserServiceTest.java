@@ -3,6 +3,7 @@ package springbook.user.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
@@ -10,6 +11,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
+import springbook.user.dao.MockUserDao;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
@@ -22,6 +24,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 
+import static org.mockito.Mockito.*;
 import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
 import static springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
@@ -97,8 +100,44 @@ class UserServiceTest {
     }
 
     @Test
+    public void mockupgradeLevels() throws Exception {
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
+
+        UserDao mockUserDao = mock(UserDao.class);  //유저다오 목 오브젝트 생성
+        when(mockUserDao.getAll()).thenReturn(this.users);  //리턴값 설정
+        userServiceImpl.setUserDao(mockUserDao);    //di
+
+        userServiceImpl.setUserLevelUpgradePolicy(this.userLevelUpgradePolicy);
+
+        MailSender mockMailSender = mock(MailSender.class);
+        userServiceImpl.setMailSender(mockMailSender);
+
+        userServiceImpl.upgradeLevels();
+
+        verify(mockUserDao, times(2)).update(any(User.class));
+        verify(mockUserDao, times(2)).update(any(User.class));
+        verify(mockUserDao).update(users.get(1));
+        assertThat(users.get(1).getLevel()).isEqualTo(Level.SILVER);
+        verify(mockUserDao).update(users.get(3));
+        assertThat(users.get(3).getLevel()).isEqualTo(Level.GOLD);
+
+//        ArgumentCaptor<SimpleMailMessage> mailMessageArg = ArgumentCaptor.forClass(SimpleMailMessage.class);
+//        verify(mockMailSender, times(2)).send(mailMessageArg.capture());
+//        List<SimpleMailMessage> mailMessages = mailMessageArg.getAllValues();
+//        assertThat(mailMessages.get(0).getTo()[0]).isEqualTo(users.get(1).getEmail());
+//        assertThat(mailMessages.get(1).getTo()[0]).isEqualTo(users.get(3).getEmail());
+
+
+    }
+
+        @Test
 //    @DirtiesContext
-    public void upgradeLevels테스트() throws Exception {
+    public void upgradeLevels테스트() throws Exception {   //목 오브젝트를 통해 db를 연동하지 않는 테스트
+        UserServiceImpl userService = new UserServiceImpl();
+
+        MockUserDao mockUserDao = new MockUserDao(this.users);
+        userServiceImpl.setUserDao(mockUserDao);
+
         userDao.deleteAll();
         for(User user: users) userDao.add(user);
 
@@ -106,21 +145,32 @@ class UserServiceTest {
 //        userServiceImpl.setMailSender(mockMailSender);
 //        userService.setMailSender(mockMailSender);
 
-        userService.upgradeLevels();
+        userServiceImpl.upgradeLevels();
 
 
-        checkLevel업글(users.get(0), false);
-        checkLevel업글(users.get(1), true);
-        checkLevel업글(users.get(2), false);
-        checkLevel업글(users.get(3), true);
-        checkLevel업글(users.get(4), false);
+
+//        checkLevel업글(users.get(0), false);
+//        checkLevel업글(users.get(1), true);
+//        checkLevel업글(users.get(2), false);
+//        checkLevel업글(users.get(3), true);
+//        checkLevel업글(users.get(4), false);
 
 //        List<String> request = mockMailSender.getRequest();
 //        assertThat(request.size()).isEqualTo(2);      //2번째 4번째 업글되어 사이즈는 2
 //        assertThat(request.get(0)).isEqualTo(users.get(1).getEmail());    //이메일 주소 확인
 //        assertThat(request.get(1)).isEqualTo(users.get(3).getEmail());
 
+        List<User> updated = mockUserDao.getUpdated();
+        assertThat(updated.size()).isEqualTo(2);
+        checkUserAndLevel(updated.get(0),"test2",Level.SILVER);
+        checkUserAndLevel(updated.get(1),"test4",Level.GOLD);
 
+
+    }
+
+    private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel){
+        assertThat(updated.getId()).isEqualTo(expectedId);
+        assertThat(updated.getLevel()).isEqualTo(expectedLevel);
     }
 
     private void checkLevel업글(User user, boolean upgraded){
