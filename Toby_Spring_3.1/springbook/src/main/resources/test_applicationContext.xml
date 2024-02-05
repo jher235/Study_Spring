@@ -5,9 +5,14 @@
     <!--    <bean id="myConnectionMaker" class="springbook.user.dao.MySqlConnectionMaker"/>-->
 
 <!--    데코레이터-->
-    <bean id="userService" class="springbook.user.service.UserServiceTx">
-        <property name="userService" ref="userServiceImpl"/>
+<!--    <bean id="userService" class="springbook.user.service.UserServiceTx">-->
+    <bean id="userService" class="springbook.user.service.TxProxyFactoryBean">
+<!--        <property name="userService" ref="userServiceImpl"/>-->
+        <property name="target" ref="userServiceImpl"/>
         <property name="transactionManager" ref="transactionManager"/>
+        <property name="pattern" value="upgradeLevels"/>
+        <property name="serviceInterface" value="springbook.user.service.UserService"/>
+
     </bean>
 
 <!--    타깃-->

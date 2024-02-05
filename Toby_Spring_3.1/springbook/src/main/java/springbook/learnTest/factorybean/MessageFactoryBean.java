@@ -18,7 +18,7 @@ public class MessageFactoryBean implements FactoryBean<Message> {
     }
 
     public boolean isSingleton(){
-        return false;
+        return false;       //getObject가 매번 같은 오브젝트를 리턴하진 않음.
     }
 
 }

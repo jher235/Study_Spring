@@ -1,5 +1,6 @@
 package springbook.user.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -19,6 +20,8 @@ public class UserServiceImpl implements UserService {
 //    private DataSource dataSource;
 
     UserDao userDao;
+
+    @Autowired
     UserLevelUpgradePolicy userLevelUpgradePolicy;
 
 //    private PlatformTransactionManager transactionManager;
