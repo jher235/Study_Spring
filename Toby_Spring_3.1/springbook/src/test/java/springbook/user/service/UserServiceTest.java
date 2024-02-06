@@ -39,7 +39,10 @@ class UserServiceTest {
     UserService userService;
 
     @Autowired
-    UserServiceImpl userServiceImpl;
+    UserService testUserService;
+
+//    @Autowired
+//    UserServiceImpl userServiceImpl;
 
     @Autowired
     UserDao userDao;
@@ -58,6 +61,8 @@ class UserServiceTest {
 
     @Autowired
     ApplicationContext context;
+
+
 
     List<User> users;
 
@@ -140,10 +145,11 @@ class UserServiceTest {
         @Test
 //    @DirtiesContext
     public void upgradeLevels테스트() throws Exception {   //목 오브젝트를 통해 db를 연동하지 않는 테스트
-        UserServiceImpl userService = new UserServiceImpl();
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
 
         MockUserDao mockUserDao = new MockUserDao(this.users);
         userServiceImpl.setUserDao(mockUserDao);
+        userServiceImpl.setUserLevelUpgradePolicy(userLevelUpgradePolicy);
 
         userDao.deleteAll();
         for(User user: users) userDao.add(user);
@@ -212,10 +218,10 @@ class UserServiceTest {
     @Test
     @DirtiesContext
     public void upgradeAllOrNot() throws Exception{
-        TestUserService testUserService = new TestUserService(users.get(3).getId());
-        testUserService.setUserDao(userDao);
-        testUserService.setMailSender(this.mailSender);
-//
+//        TestUserService testUserService = new TestUserService(users.get(3).getId());
+//        testUserService.setUserDao(userDao);
+//        testUserService.setMailSender(this.mailSender);
+
 //        UserServiceTx txUserService = new UserServiceTx();
 //        txUserService.setTransactionManager(transactionManager);
 //        txUserService.setUserService(testUserService);
@@ -226,25 +232,38 @@ class UserServiceTest {
 //        txHandler.setPattern("upgradeLevels");
 //        UserService txUserService = (UserService) Proxy.newProxyInstance(getClass().getClassLoader(),new Class[]{UserService.class}, txHandler);
 
-        testUserService.setUserLevelUpgradePolicy(this.userLevelUpgradePolicy);
+//        testUserService.setUserLevelUpgradePolicy(this.userLevelUpgradePolicy);
 
 //        TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
-        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(testUserService);
-        UserService txUserService = (UserService) txProxyFactoryBean.getObject();
+
+//        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
+//        txProxyFactoryBean.setTarget(testUserService);
+//        UserService txUserService = (UserService) txProxyFactoryBean.getObject();
 
 
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
 
         try{
-            txUserService.upgradeLevels();
+//            txUserService.upgradeLevels();
+            this.testUserService.upgradeLevels();
             fail("TestUserServiceException expected");
         }catch (TestUserServiceException e){
 
         }
 
         checkLevel업글(users.get(1),false);
+    }
+
+    static class TestUserServiceImpl extends UserServiceImpl {
+        private String id = "test4";
+
+        protected void upgradeLevel(User user){
+            if(user.getId().equals(this.id)) throw new TestUserServiceException();
+            super.upgradeLevel(user);
+
+        }
+
     }
 
 

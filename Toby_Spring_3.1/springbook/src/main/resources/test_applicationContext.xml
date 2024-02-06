@@ -4,29 +4,34 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <!--    <bean id="myConnectionMaker" class="springbook.user.dao.MySqlConnectionMaker"/>-->
 
+    <!-- aop 설정 자동화 -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+
 <!--    데코레이터-->
 <!--    <bean id="userService" class="springbook.user.service.UserServiceTx">-->
 <!--    <bean id="userService" class="springbook.user.service.TxProxyFactoryBean">-->
-    <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
-<!--        <property name="userService" ref="userServiceImpl"/>-->
-        <property name="target" ref="userServiceImpl"/>
-        <property name="interceptorNames">
-            <list>
-                <value>transactionAdvisor</value>
-            </list>
-        </property>
+<!--    <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">-->       <!-- 명시적 프록시 패턴 작성 X-->
+<!--&lt;!&ndash;        <property name="userService" ref="userServiceImpl"/>&ndash;&gt;-->
+<!--        <property name="target" ref="userServiceImpl"/>-->
+<!--        <property name="interceptorNames">-->
+<!--            <list>-->
+<!--                <value>transactionAdvisor</value>-->
+<!--            </list>-->
+<!--        </property>-->
 <!--        <property name="transactionManager" ref="transactionManager"/>-->
 <!--        <property name="pattern" value="upgradeLevels"/>-->
 <!--        <property name="serviceInterface" value="springbook.user.service.UserService"/>-->
 
-    </bean>
+<!--    </bean>-->
 
     <bean id="transactionAdvice" class="springbook.user.service.TransactionAdvice">
         <property name="transactionManager" ref="transactionManager"/>
     </bean>
 
-    <bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
-        <property name="mappedName" value="upgrade*"/>
+    <bean id="transactionPointcut" class="springbook.user.service.NameMatchClassMethodPointcut">
+<!--    <bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">-->
+        <property name="mappedName" value="upgrade*"/>  <!--   메소드 이름 패턴    -->
+        <property name="mappedClassName" value="*ServiceImpl"/>     <!--  클래스 이름 패턴 -->
     </bean>
 
     <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
@@ -35,7 +40,8 @@
     </bean>
 
 <!--    타깃-->
-    <bean id="userServiceImpl" class="springbook.user.service.UserServiceImpl">
+    <bean id="userService" class="springbook.user.service.UserServiceImpl">
+<!--    <bean id="userServiceImpl" class="springbook.user.service.UserServiceImpl">-->
         <!--        <property name="dataSource" ref="dataSource"/>-->
         <property name="userDao" ref="userDao"/>
         <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
@@ -56,9 +62,11 @@
 <!--        <property name="jdbcContext" ref="jdbcContext"/>-->
     </bean>
 
-    <bean id="userLevelUpgradePolicy" class="springbook.user.service.UserLevelOrdinary">
-    </bean>
+    <bean id="userLevelUpgradePolicy" class="springbook.user.service.UserLevelOrdinary"/>
 
+
+<!--UserServiceTest에서 TestUserServiceImpl을 지정함-->
+    <bean id="testUserService" class="springbook.user.service.UserServiceTest$TestUserServiceImpl" parent="userService"/>
 
 <!--    <bean id="jdbcContext" class="springbook.user.dao.JdbcContext">-->
 <!--        <property name="dataSource" ref="dataSource"/>-->
