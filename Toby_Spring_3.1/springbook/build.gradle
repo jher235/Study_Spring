@@ -32,6 +32,9 @@ dependencies {
 	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
 	// https://mvnrepository.com/artifact/javax.mail/javax.mail-api
 	implementation group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
+	// https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
+	runtimeOnly group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.7'
+
 
 
 

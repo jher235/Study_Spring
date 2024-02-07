@@ -1,5 +1,6 @@
 package springbook.user.service;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,9 +12,14 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import springbook.user.dao.MockUserDao;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
@@ -34,6 +40,7 @@ import static springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations ="/test_applicationContext.xml")
+@Transactional
 class UserServiceTest {
     @Autowired
     UserService userService;
@@ -77,6 +84,11 @@ class UserServiceTest {
         );
     }
 
+    @AfterEach
+    public void clear(){
+        userDao.deleteAll();
+    }
+
     static class TestUserService extends UserServiceImpl{
         private String id;
 
@@ -112,7 +124,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void mockupgradeLevels() throws Exception {
+    public void mockUpgradeLevels() throws Exception {
         UserServiceImpl userServiceImpl = new UserServiceImpl();
 
         UserDao mockUserDao = mock(UserDao.class);  //유저다오 목 오브젝트 생성
@@ -186,7 +198,7 @@ class UserServiceTest {
         assertThat(updated.getLevel()).isEqualTo(expectedLevel);
     }
 
-    private void checkLevel업글(User user, boolean upgraded){
+    private void checkLevelUpgraded(User user, boolean upgraded){
         User userUpdate = userDao.get(user.getId());
         if (upgraded){
             assertThat(userUpdate.getLevel()).isEqualTo(user.getLevel().getNextLevel());
@@ -252,7 +264,29 @@ class UserServiceTest {
 
         }
 
-        checkLevel업글(users.get(1),false);
+        checkLevelUpgraded(users.get(1),false);
+    }
+
+    @Test
+    @Transactional
+    @Rollback(false)    //롤백되지 않도록 함 기본설정은 true로 롤백됨.
+//    @Transactional(propagation = Propagation.NEVER)     //트랜잭션 전파 속성을 NEVER로 주어서 트랜잭션이 시작되지 않도록 함.
+    public void transactionSync(){
+
+        userService.deleteAll();
+        assertThat(userDao.getCount()).isEqualTo(0);
+
+        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition(); //트랜잭션 정의 기본값 사용
+        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);   //트랜잭션 매니저에게 트랜잭션 요구
+
+        userService.add(users.get(0));
+        userService.add(users.get(1));
+
+        assertThat(userDao.getCount()).isEqualTo(2);
+
+        transactionManager.rollback(txStatus);
+        assertThat(userDao.getCount()).isEqualTo(0);
+//        transactionManager.commit(txStatus);
     }
 
     static class TestUserServiceImpl extends UserServiceImpl {
