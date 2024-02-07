@@ -10,6 +10,7 @@ import springbook.user.domain.User;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
 
 public class UserDaoJdbc implements UserDao{
 
@@ -17,6 +18,18 @@ public class UserDaoJdbc implements UserDao{
 
     private JdbcContext jdbcContext;
     private JdbcTemplate jdbcTemplate;
+
+    private String sqlAdd;
+
+    private Map<String, String > sqlMap;
+
+    public void setSqlMap(Map<String, String> sqlMap) {
+        this.sqlMap = sqlMap;
+    }
+
+    public void setSqlAdd(String sqlAdd) {
+        this.sqlAdd = sqlAdd;
+    }
 
     public void setDataSource(DataSource dataSource) {
 
@@ -26,7 +39,11 @@ public class UserDaoJdbc implements UserDao{
 
 
     public void add(final User user) throws DuplicateUserIdException {
-        this.jdbcTemplate.update("insert into users(id, name, password,email,level,login,recommend) values(?,?,?,?,?,?,?)", user.getId(), user.getName(), user.getPassword(),user.getEmail(), user.getLevel().intValue(),user.getLogin(),user.getRecommend());
+//        this.jdbcTemplate.update("insert into users(id, name, password,email,level,login,recommend) values(?,?,?,?,?,?,?)", user.getId(), user.getName(), user.getPassword(),user.getEmail(), user.getLevel().intValue(),user.getLogin(),user.getRecommend());
+        this.jdbcTemplate.update(
+                this.sqlMap.get("add"),
+                user.getId(), user.getName(), user.getPassword(),user.getEmail(),
+                user.getLevel().intValue(),user.getLogin(),user.getRecommend());
     }
 
     public class DuplicateUserIdException extends RuntimeException{
@@ -36,31 +53,30 @@ public class UserDaoJdbc implements UserDao{
     }
 
     public User get(String id){
-        return this.jdbcTemplate.queryForObject("select * from users where id = ?",new Object[]{id},this.userMapper);
+        return this.jdbcTemplate.queryForObject(this.sqlMap.get("get"),new Object[]{id},this.userMapper);
     }
 
 
     public void deleteAll() {
-        this.jdbcTemplate.update("delete from users");  //JdbcTemplate의 내장 콜백을 사용함.
+        this.jdbcTemplate.update(this.sqlMap.get("deleteAll"));  //JdbcTemplate의 내장 콜백을 사용함.
     }
 
 
     public int getCount()  {
-        return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+        return this.jdbcTemplate.queryForObject(this.sqlMap.get("getCount"), Integer.class);
     }
 
     @Override
     public void update(User user) {
         this.jdbcTemplate.update(
-                "update users set name = ?, password = ?,email = ?, level = ?, login = ?, " +
-                        "recommend = ? where id = ?", user.getName(), user.getPassword(),user.getEmail(),
+                this.sqlMap.get("update"), user.getName(), user.getPassword(),user.getEmail(),
                         user.getLevel().intValue(),user.getLogin(), user.getRecommend(), user.getId()
         );
 
     }
 
     public List<User> getAll(){
-        return this.jdbcTemplate.query("select * from users order by id", this.userMapper);
+        return this.jdbcTemplate.query(this.sqlMap.get("getAll"), this.userMapper);
     }
 
     private RowMapper<User> userMapper =
