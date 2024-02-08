@@ -3,18 +3,23 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/aop
        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
         http://www.springframework.org/schema/tx
-		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-
+    <!-- aop -->
+    <tx:annotation-driven />
 
     <!-- aop 설정 자동화 -->
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
 
+    <context:annotation-config />
 
     <tx:advice id="transactionAdvice">
         <tx:attributes>
@@ -65,7 +70,19 @@
 <!--            </map>-->
 <!--        </property>-->
 <!--    </bean>-->
-    <bean id="sqlService" class="springbook.user.sqlservice.XmlSqlService"></bean>
+    <bean id="sqlService" class="springbook.user.sqlservice.BaseSqlService">
+<!--    <bean id="sqlService" class="springbook.user.sqlservice.XmlSqlService">-->
+        <property name="sqlReader" ref="sqlReader"/>
+        <property name="sqlRegistry" ref="sqlRegistry"/>
+<!--        <property name="sqlmapFile" value="sqlmap.xml"/>-->
+    </bean>
+
+    <bean id="sqlReader" class="springbook.user.sqlservice.JaxbXmlSqlReader">
+        <property name="sqlmapFile" value="sqlmap.xml"/>
+    </bean>
+
+    <bean id="sqlRegistry" class="springbook.user.sqlservice.HashMapSqlRegister">
+    </bean>
 
     <bean id="userLevelUpgradePolicy" class="springbook.user.service.UserLevelOrdinary"/>
 

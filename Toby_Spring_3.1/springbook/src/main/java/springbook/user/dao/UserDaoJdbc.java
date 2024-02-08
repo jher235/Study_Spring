@@ -1,5 +1,6 @@
 package springbook.user.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,6 +25,7 @@ public class UserDaoJdbc implements UserDao{
 
     private Map<String, String > sqlMap;
 
+    @Autowired
     private SqlService sqlService;
 
     public void setSqlService(SqlService sqlService) {

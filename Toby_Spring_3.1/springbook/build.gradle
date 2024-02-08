@@ -36,13 +36,25 @@ dependencies {
 	implementation group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
 	// https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
 	runtimeOnly group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.7'
+
 	// https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
 	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
+//	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.1'
 	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '3.0.2'
 
 
 
+
+
+	// JAXB Core
+	implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+
+	// JAXB Implementation
+	implementation 'com.sun.xml.bind:jaxb-impl:2.3.2'
+
+	// Java Activation Framework
+	implementation 'javax.activation:activation:1.1.1'
 
 }
 
