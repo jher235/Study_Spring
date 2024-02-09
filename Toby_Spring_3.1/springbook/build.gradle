@@ -44,17 +44,22 @@ dependencies {
 	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '3.0.2'
 
 
+	// https://mvnrepository.com/artifact/org.springframework/spring-oxm
+	implementation group: 'org.springframework', name: 'spring-oxm', version: '6.0.16'
 
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.1'
 
+	implementation 'jakarta.activation:jakarta.activation-api:2.0.0'
 
 	// JAXB Core
 	implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
-
 	// JAXB Implementation
 	implementation 'com.sun.xml.bind:jaxb-impl:2.3.2'
-
 	// Java Activation Framework
 	implementation 'javax.activation:activation:1.1.1'
+
+
 
 }
 
