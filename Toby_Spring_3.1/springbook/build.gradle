@@ -59,6 +59,10 @@ dependencies {
 	// Java Activation Framework
 	implementation 'javax.activation:activation:1.1.1'
 
+	// https://mvnrepository.com/artifact/org.hsqldb/hsqldb
+	testImplementation group: 'org.hsqldb', name: 'hsqldb', version: '2.7.1'
+
+
 
 
 }

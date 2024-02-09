@@ -10,12 +10,9 @@ import springbook.user.sqlservice.jaxb.Sqlmap;
 
 import javax.annotation.PostConstruct;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class OxmSqlService implements SqlService {
 //    private final BaseSqlService baseSqlService = new DefaultSqlService();
@@ -56,7 +53,8 @@ public class OxmSqlService implements SqlService {
 
     private class OxmSqlReader implements SqlReader{
 
-        private Resource sqlmap =  new ClassPathResource("sqlmap.xml",UserDao.class);
+        private Resource sqlmap =  new ClassPathResource("/sqlmap.xml",UserDao.class);
+//        private Resource sqlmap =  new ClassPathResource("/etc/sqlmap.xml",this.getClass());
         private Unmarshaller unmarshaller;
 //        private final static String DEFAULT_SQLMAP_FILE = "sqlmap.xml";
 //        private String sqlmapFile = DEFAULT_SQLMAP_FILE;
