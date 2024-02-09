@@ -41,7 +41,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
         "sql"
 })
-@XmlRootElement(name = "sqlmap")
+//@XmlRootElement(name = "sqlmap")
+@XmlRootElement(name = "sqlmap", namespace = "http://www.epril.com/sqlmap")
 public class Sqlmap {
 
     @XmlElement(required = true)
