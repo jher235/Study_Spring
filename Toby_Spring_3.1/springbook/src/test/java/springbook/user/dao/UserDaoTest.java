@@ -13,7 +13,6 @@ import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import springbook.user.AppContext;
-import springbook.user.TestAppContext;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 

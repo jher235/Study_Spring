@@ -1,14 +1,16 @@
 package springbook.user;
 
-import com.mysql.cj.jdbc.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.context.annotation.*;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -27,14 +29,22 @@ import springbook.user.sqlservice.updatable.EmbeddedDbSqlRegistry;
 
 import javax.sql.DataSource;
 
+import java.sql.Driver;
+
 import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.HSQL;
 
 @Configuration
 //@ImportResource("/test_applicationContext.xml")
-@Import(SqlServiceContext.class)
+@Import({SqlServiceContext.class})
+//@Import({SqlServiceContext.class, AppContext.TestAppContext.class, AppContext.ProductionAppContext.class})
 @EnableTransactionManagement
 @ComponentScan(basePackages = "springbook.user")    //이 패키지 아래서 찾기
+@PropertySource("/database.properties")     //Environment 타입의 환경 오브젝트에 저장됨
 public class AppContext {
+    @Value("${db.driverClass}") Class<? extends Driver> driverClass;
+    @Value("${db.url}") String url;
+    @Value("${db.username}") String username;
+    @Value("${db.password}") String password;
 
 //    @Autowired
 //    SqlService sqlService;
@@ -42,18 +52,45 @@ public class AppContext {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    Environment env;
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer placeholderConfigurer(){
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
 //   DB연결과 트랜잭션
     @Bean
     public DataSource dataSource(){
-        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+//        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+//
+//        dataSource.setDriverClass(Driver.class);
+//        dataSource.setUrl("jdbc:mysql://localhost/test_tobyspring3_1");
+//        dataSource.setUsername("root");
+//        dataSource.setPassword("jher235");
+//
+//        return dataSource;
 
-        dataSource.setDriverClass(Driver.class);
-        dataSource.setUrl("jdbc:mysql://localhost/test_tobyspring3_1");
-        dataSource.setUsername("root");
-        dataSource.setPassword("jher235");
+        SimpleDriverDataSource ds = new SimpleDriverDataSource();
 
-        return dataSource;
+//        try{
+//            ds.setDriverClass((Class<? extends java.sql.Driver>)Class.forName(env.getProperty("db.driverClass")) );
+//        } catch (ClassNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+//        ds.setUrl(env.getProperty("db.url"));
+//        ds.setUsername(env.getProperty("db.username"));
+//        ds.setPassword(env.getProperty("db.password"));
+
+
+        ds.setDriverClass(this.driverClass);
+
+        ds.setUrl(this.url);
+        ds.setUsername(this.username);
+        ds.setPassword(this.password);
+
+        return ds;
     }
 
     @Bean
@@ -62,6 +99,35 @@ public class AppContext {
             tm.setDataSource(dataSource());
             return tm;
     }
+
+//    @Configuration
+//    @Profile("production")
+//    public static class ProductionAppContext {
+//        @Bean
+//        public MailSender mailSender() {
+//            JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+//            mailSender.setHost("localhost");
+//            return mailSender;
+//        }
+//    }
+
+//    @Configuration
+//    @Profile("test")
+//    public static class TestAppContext {
+//        @Bean
+//        public UserService testUserService() {
+//            return new TestUserService();
+//        }
+//        @Bean
+//        public UserLevelUpgradePolicy userLevelUpgradePolicy(){
+//            return new UserLevelOrdinary();
+//        }
+//
+//        @Bean
+//        public MailSender mailSender() {
+//            return new DummyMailSender();
+//        }
+//    }
 
 //    애플리케이션 로직 & 테스트용 빈
 //    @Bean
@@ -72,13 +138,13 @@ public class AppContext {
 //        return dao;
 //    }
 
-    @Bean
-    public UserService userService(){
-        UserServiceImpl service = new UserServiceImpl();
-        service.setUserDao(this.userDao);
-        service.setUserLevelUpgradePolicy(userLevelUpgradePolicy());
-        return service;
-    }
+//    @Bean
+//    public UserService userService(){
+//        UserServiceImpl service = new UserServiceImpl();
+//        service.setUserDao(this.userDao);
+//        service.setUserLevelUpgradePolicy(userLevelUpgradePolicy());
+//        return service;
+//    }
 
 //    @Bean
 //    public UserService testUserService() {
@@ -89,10 +155,10 @@ public class AppContext {
 //        return testService;
 //    }
 
-    @Bean
-    public UserLevelUpgradePolicy userLevelUpgradePolicy(){
-        return new UserLevelOrdinary();
-    }
+//    @Bean
+//    public UserLevelUpgradePolicy userLevelUpgradePolicy(){
+//        return new UserLevelOrdinary();
+//    }
 
 //    Sql 서비스
 
