@@ -1,23 +1,21 @@
 package springbook.user.dao;
 
 
-import com.sun.jdi.request.DuplicateRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import springbook.user.AppContext;
+import springbook.user.TestAppContext;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
-import springbook.user.sqlservice.SqlRetrievalFailureException;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -31,7 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 //@ExtendWith(SpringExtension.class)        //JUnit 5에서 사용하는 확장 모델 지정   ContextConfiguration이 설정파일을 알려주면 그걸 가져와서 적용해줌
 //@ContextConfiguration(classes = DaoFactory.class)
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations ="/test_applicationContext.xml")      //방법2 xml파일을 새로 만들어서 db커넥션 설정
+@ContextConfiguration(classes = {AppContext.class, TestAppContext.class})
+//@ContextConfiguration(locations ="/test_applicationContext.xml")      //방법2 xml파일을 새로 만들어서 db커넥션 설정
 //@ContextConfiguration(locations ="/applicationContext.xml")
 //@DirtiesContext     //applicationContext의 구성, 상태를 변경할 것이라는 것을 알려주는 것.
 class UserDaoTest {

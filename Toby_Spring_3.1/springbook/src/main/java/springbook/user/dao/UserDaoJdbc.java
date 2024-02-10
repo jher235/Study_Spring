@@ -5,6 +5,8 @@ import org.springframework.dao.DuplicateKeyException;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 import springbook.user.sqlservice.SqlService;
@@ -14,6 +16,8 @@ import java.sql.*;
 import java.util.List;
 import java.util.Map;
 
+//@Component
+@Repository
 public class UserDaoJdbc implements UserDao{
 
     private DataSource dataSource;      //스프링에서 제공하는 인터페이스 객체
@@ -28,9 +32,9 @@ public class UserDaoJdbc implements UserDao{
     @Autowired
     private SqlService sqlService;
 
-    public void setSqlService(SqlService sqlService) {
-        this.sqlService = sqlService;
-    }
+//    public void setSqlService(SqlService sqlService) {
+//        this.sqlService = sqlService;
+//    }
 
     public void setSqlMap(Map<String, String> sqlMap) {
         this.sqlMap = sqlMap;
@@ -40,10 +44,9 @@ public class UserDaoJdbc implements UserDao{
 //        this.sqlAdd = sqlAdd;
 //    }
 
+    @Autowired
     public void setDataSource(DataSource dataSource) {
-
         this.jdbcTemplate = new JdbcTemplate(dataSource);   //jdbcTemplate 방식
-
     }
 
 

@@ -4,8 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
@@ -17,16 +15,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import springbook.user.AppContext;
+import springbook.user.TestAppContext;
 import springbook.user.dao.MockUserDao;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,9 +37,10 @@ import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
 import static springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations ="/test_applicationContext.xml")
+//@ContextConfiguration(locations ="/test_applicationContext.xml")
+@ContextConfiguration(classes = {AppContext.class, TestAppContext.class})
 @Transactional
-class UserServiceTest {
+public class UserServiceTest {
     @Autowired
     UserService userService;
 
@@ -63,8 +62,8 @@ class UserServiceTest {
     @Autowired
     UserLevelUpgradePolicy userLevelUpgradePolicy;
 
-    @Autowired
-    MailSender mailSender;
+//    @Autowired
+//    MailSender mailSender;
 
     @Autowired
     ApplicationContext context;
@@ -89,19 +88,19 @@ class UserServiceTest {
         userDao.deleteAll();
     }
 
-    static class TestUserService extends UserServiceImpl{
-        private String id;
-
-        private TestUserService(String id){
-            this.id = id;
-        }
-
-        @Override
-        protected void upgradeLevel(User user) {
-            if(user.getId().equals(this.id)) throw new TestUserServiceException();
-            super.upgradeLevel(user);
-        }
-    }
+//    public static class TestUserService extends UserServiceImpl{
+//        private String id;
+//
+//        private TestUserService(String id){
+//            this.id = id;
+//        }
+//
+//        @Override
+//        protected void upgradeLevel(User user) {
+//            if(user.getId().equals(this.id)) throw new TestUserServiceException();
+//            super.upgradeLevel(user);
+//        }
+//    }
 
     static class TestUserServiceException extends RuntimeException{
     }
@@ -230,28 +229,6 @@ class UserServiceTest {
     @Test
     @DirtiesContext
     public void upgradeAllOrNot() throws Exception{
-//        TestUserService testUserService = new TestUserService(users.get(3).getId());
-//        testUserService.setUserDao(userDao);
-//        testUserService.setMailSender(this.mailSender);
-
-//        UserServiceTx txUserService = new UserServiceTx();
-//        txUserService.setTransactionManager(transactionManager);
-//        txUserService.setUserService(testUserService);
-
-//        TransactionHandler txHandler = new TransactionHandler();
-//        txHandler.setTarget(testUserService);
-//        txHandler.setTransactionManager(transactionManager);
-//        txHandler.setPattern("upgradeLevels");
-//        UserService txUserService = (UserService) Proxy.newProxyInstance(getClass().getClassLoader(),new Class[]{UserService.class}, txHandler);
-
-//        testUserService.setUserLevelUpgradePolicy(this.userLevelUpgradePolicy);
-
-//        TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
-
-//        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
-//        txProxyFactoryBean.setTarget(testUserService);
-//        UserService txUserService = (UserService) txProxyFactoryBean.getObject();
-
 
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
@@ -289,13 +266,19 @@ class UserServiceTest {
 //        transactionManager.commit(txStatus);
     }
 
-    static class TestUserServiceImpl extends UserServiceImpl {
+    public static class TestUserService extends UserServiceImpl {
         private String id = "test4";
 
-        protected void upgradeLevel(User user){
-            if(user.getId().equals(this.id)) throw new TestUserServiceException();
+        protected void upgradeLevel(User user) {
+            if (user.getId().equals(this.id)) throw new TestUserServiceException();
             super.upgradeLevel(user);
+        }
 
+        public List<User> getAll() {
+            for(User user : super.getAll()) {
+                super.update(user);
+            }
+            return null;
         }
 
     }

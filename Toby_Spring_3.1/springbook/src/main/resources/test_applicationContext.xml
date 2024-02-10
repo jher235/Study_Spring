@@ -41,25 +41,25 @@
 
 
 <!--    타깃-->
-    <bean id="userService" class="springbook.user.service.UserServiceImpl">
-        <property name="userDao" ref="userDao"/>
-        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
-    </bean>
+<!--    <bean id="userService" class="springbook.user.service.UserServiceImpl">-->
+<!--        <property name="userDao" ref="userDao"/>-->
+<!--        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>-->
+<!--    </bean>-->
 
-    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="mail.server.com"/>
-    </bean>
+<!--    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">-->
+<!--        <property name="host" value="mail.server.com"/>-->
+<!--    </bean>-->
 
 <!--만약 jta로 고치고 싶다면 설정만 class="org.springframework.transaction.jta.JtaTransactionManager" 이렇게 변경하면 된다.-->
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+<!--    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
+<!--        <property name="dataSource" ref="dataSource"/>-->
+<!--    </bean>-->
 
-    <bean id="userDao" class="springbook.user.dao.UserDaoJdbc">
-        <property name="dataSource" ref="dataSource"/>
-       <property name="sqlService" ref="sqlService"/>
-<!--        <property name="sqlAdd" value="insert into users(id, name, password,email,level,login,recommend) values(?,?,?,?,?,?,?)"/>-->
-    </bean>
+<!--    <bean id="userDao" class="springbook.user.dao.UserDaoJdbc">-->
+<!--        <property name="dataSource" ref="dataSource"/>-->
+<!--       <property name="sqlService" ref="sqlService"/>-->
+<!--&lt;!&ndash;        <property name="sqlAdd" value="insert into users(id, name, password,email,level,login,recommend) values(?,?,?,?,?,?,?)"/>&ndash;&gt;-->
+<!--    </bean>-->
 
 <!--    <bean id="sqlService" class="springbook.user.sqlservice.SimpleSqlService">-->
 <!--        <property name="sqlMap">-->
@@ -93,10 +93,10 @@
         <jdbc:script location="classpath:/etc/sqlRegistrySchema.sql"/>
     </jdbc:embedded-database>
 
-    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
 <!--    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">-->
-        <property name="contextPath" value="springbook.user.sqlservice.jaxb" />
-    </bean>
+<!--&lt;!&ndash;    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">&ndash;&gt;-->
+<!--        <property name="contextPath" value="springbook.user.sqlservice.jaxb" />-->
+<!--    </bean>-->
 
 
 
@@ -115,21 +115,21 @@
 <!--    <bean id="sqlRegistry" class="springbook.user.sqlservice.HashMapSqlRegister">-->
 <!--    </bean>-->
 
-    <bean id="userLevelUpgradePolicy" class="springbook.user.service.UserLevelOrdinary"/>
+<!--    <bean id="userLevelUpgradePolicy" class="springbook.user.service.UserLevelOrdinary"/>-->
 
 
 <!--UserServiceTest에서 TestUserServiceImpl을 지정함-->
-    <bean id="testUserService" class="springbook.user.service.UserServiceTest$TestUserServiceImpl" parent="userService"/>
+<!--    <bean id="testUserService" class="springbook.user.service.UserServiceTest$TestUserServiceImpl" parent="userService"/>-->
 
 
 
 
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>     <!-- 스프링이 프로퍼티 값을 적절한 형태인 java.lang.Class 타입으로 만들어줌 -->
-        <property name="url" value="jdbc:mysql://localhost/test_tobyspring3_1"/>
-        <property name="username" value="root"/>
-        <property name="password" value="jher235"/>
-    </bean>
+<!--    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">-->
+<!--        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>     &lt;!&ndash; 스프링이 프로퍼티 값을 적절한 형태인 java.lang.Class 타입으로 만들어줌 &ndash;&gt;-->
+<!--        <property name="url" value="jdbc:mysql://localhost/test_tobyspring3_1"/>-->
+<!--        <property name="username" value="root"/>-->
+<!--        <property name="password" value="jher235"/>-->
+<!--    </bean>-->
 
 
 
