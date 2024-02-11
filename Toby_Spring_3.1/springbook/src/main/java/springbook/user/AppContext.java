@@ -6,6 +6,8 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -16,6 +18,7 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springbook.user.dao.UserDao;
+import springbook.user.domain.User;
 import springbook.user.service.UserLevelOrdinary;
 import springbook.user.service.UserLevelUpgradePolicy;
 import springbook.user.service.UserService;
@@ -40,7 +43,8 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
 @EnableTransactionManagement
 @ComponentScan(basePackages = "springbook.user")    //이 패키지 아래서 찾기
 @PropertySource("/database.properties")     //Environment 타입의 환경 오브젝트에 저장됨
-public class AppContext {
+@EnableSqlService   //sql서비스를 사용하겠다는 사용자 정의 애노테이션
+public class AppContext implements SqlmapConfig{
     @Value("${db.driverClass}") Class<? extends Driver> driverClass;
     @Value("${db.url}") String url;
     @Value("${db.username}") String username;
@@ -98,6 +102,16 @@ public class AppContext {
             DataSourceTransactionManager tm = new DataSourceTransactionManager();
             tm.setDataSource(dataSource());
             return tm;
+    }
+
+    @Bean
+    public SqlmapConfig sqlmapConfig(){
+        return new UserSqlMapConfig();
+    }
+
+    @Override
+    public Resource getSqlMapResource() {
+        return new ClassPathResource("sqlmap.xml", UserDao.class);
     }
 
 //    @Configuration

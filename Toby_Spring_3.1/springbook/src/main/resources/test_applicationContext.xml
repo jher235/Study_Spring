@@ -41,10 +41,10 @@
 
 
 <!--    타깃-->
-<!--    <bean id="userService" class="springbook.user.service.UserServiceImpl">-->
-<!--        <property name="userDao" ref="userDao"/>-->
-<!--        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>-->
-<!--    </bean>-->
+    <bean id="userService" class="springbook.user.service.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
+    </bean>
 
 <!--    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">-->
 <!--        <property name="host" value="mail.server.com"/>-->
@@ -75,23 +75,23 @@
 <!--    </bean>-->
 <!--    <bean id="sqlService" class="springbook.user.sqlservice.DefaultSqlService"></bean>-->
 
-    <bean id="sqlService" class="springbook.user.sqlservice.OxmSqlService">
-        <property name="unmarshaller" ref="unmarshaller"/>
-        <property name="sqlmap" value="classpath:/springbook/user/dao/sqlmap.xml"/>
-<!--        <property name="sqlmap" value="classpath:/etc/sqlmap.xml"/>-->
-        <property name="sqlRegistry" ref="sqlRegistry"/>
-<!--        <property name="sqlmap" value="file:/opt/resources/sqlmap.xml"/>-->
-<!--        <property name="sqlmap" value="http://www.epril.com/resources/sqlmap.xml"/>-->
-    </bean>
+<!--    <bean id="sqlService" class="springbook.user.sqlservice.OxmSqlService">-->
+<!--        <property name="unmarshaller" ref="unmarshaller"/>-->
+<!--        <property name="sqlmap" value="classpath:/springbook/user/dao/sqlmap.xml"/>-->
+<!--&lt;!&ndash;        <property name="sqlmap" value="classpath:/etc/sqlmap.xml"/>&ndash;&gt;-->
+<!--        <property name="sqlRegistry" ref="sqlRegistry"/>-->
+<!--&lt;!&ndash;        <property name="sqlmap" value="file:/opt/resources/sqlmap.xml"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        <property name="sqlmap" value="http://www.epril.com/resources/sqlmap.xml"/>&ndash;&gt;-->
+<!--    </bean>-->
 
-<!--    <bean id="sqlRegistry" class="springbook.user.sqlservice.updatable.ConcurrentHashMapSqlRegistry"/>-->
-    <bean id="sqlRegistry" class="springbook.user.sqlservice.updatable.EmbeddedDbSqlRegistry">
-        <property name="dataSource" ref="embeddedDatabase"/>
-    </bean>
+<!--&lt;!&ndash;    <bean id="sqlRegistry" class="springbook.user.sqlservice.updatable.ConcurrentHashMapSqlRegistry"/>&ndash;&gt;-->
+<!--    <bean id="sqlRegistry" class="springbook.user.sqlservice.updatable.EmbeddedDbSqlRegistry">-->
+<!--        <property name="dataSource" ref="embeddedDatabase"/>-->
+<!--    </bean>-->
 
-    <jdbc:embedded-database id="embeddedDatabase" type="HSQL">
-        <jdbc:script location="classpath:/etc/sqlRegistrySchema.sql"/>
-    </jdbc:embedded-database>
+<!--    <jdbc:embedded-database id="embeddedDatabase" type="HSQL">-->
+<!--        <jdbc:script location="classpath:/etc/sqlRegistrySchema.sql"/>-->
+<!--    </jdbc:embedded-database>-->
 
 <!--    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">-->
 <!--&lt;!&ndash;    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">&ndash;&gt;-->
@@ -119,7 +119,7 @@
 
 
 <!--UserServiceTest에서 TestUserServiceImpl을 지정함-->
-<!--    <bean id="testUserService" class="springbook.user.service.UserServiceTest$TestUserServiceImpl" parent="userService"/>-->
+    <bean id="testUserService" class="springbook.user.service.UserServiceTest$TestUserServiceImpl" parent="userService"/>
 
 
 
