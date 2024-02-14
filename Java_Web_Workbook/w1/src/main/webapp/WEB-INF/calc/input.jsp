@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<form action="calcResult.jsp" method="post">    <%--action과 method 추가 calcResult.jsp으로 전송함--%>
+<form action="calcResult" method="post">    <%--action과 method 추가 calcResult.jsp으로 전송함--%>
     <input type="number" name="num1">
     <input type="number" name="num2">
     <button type="submit">SEND</button>
