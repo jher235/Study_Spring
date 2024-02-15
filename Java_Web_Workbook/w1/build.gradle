@@ -26,6 +26,17 @@ dependencies {
 
   testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+
+  // https://mvnrepository.com/artifact/javax.servlet/jstl
+//  implementation group: 'javax.servlet', name: 'jstl', version: '1.2'
+
+//  자카르타는 jstl 사용하려면 아래 코드를 사용해야 함..
+  // https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api
+  implementation group: 'jakarta.servlet.jsp.jstl', name: 'jakarta.servlet.jsp.jstl-api', version: '3.0.0'
+  // https://mvnrepository.com/artifact/org.eclipse.jetty/glassfish-jstl
+  implementation group: 'org.eclipse.jetty', name: 'glassfish-jstl', version: '11.0.20'
+
+
 }
 
 test {
