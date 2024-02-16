@@ -30,6 +30,15 @@ dependencies {
   // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
   implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.1.4'
 
+  // https://mvnrepository.com/artifact/org.projectlombok/lombok  //https://projectlombok.org/setup/gradle에서 가져온 코드
+  compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+  annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+  testCompileOnly 'org.projectlombok:lombok:1.18.24'
+  testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+  implementation group : "com.zaxxer", name : "HikariCP", version : "5.0.0"
+
 }
 
 test {
