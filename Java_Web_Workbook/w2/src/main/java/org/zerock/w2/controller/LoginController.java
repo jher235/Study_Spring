@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.java.Log;
+import org.zerock.w2.dto.MemberDTO;
+import org.zerock.w2.service.MemberService;
 
 import java.io.IOException;
 
@@ -28,13 +30,24 @@ public class LoginController extends HttpServlet {
         String mid = req.getParameter("mid");
         String mpw = req.getParameter("mpw");
 
-        String str = mid+mpw;
+        try{
+            MemberDTO memberDTO = MemberService.INSTANCE.login(mid, mpw);
+            HttpSession session = req.getSession();
+            session.setAttribute("loginInfo", memberDTO);
+            resp.sendRedirect("/todo/list");
 
-        HttpSession session =  req.getSession();
+        } catch (Exception e) {
+            resp.sendRedirect("/login?result=error");
+        }
 
-        session.setAttribute("loginInfo", str);
 
-        resp.sendRedirect("/todo/list");
+//        String str = mid+mpw;
+//
+//        HttpSession session =  req.getSession();
+//
+//        session.setAttribute("loginInfo", str);
+//
+//        resp.sendRedirect("/todo/list");
 
 
     }
