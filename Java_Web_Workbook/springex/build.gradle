@@ -33,6 +33,11 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-test', version: '6.0.11'
     implementation group: 'org.springframework', name: 'spring-webmvc', version: '6.0.11'
 
+    implementation group: 'org.springframework', name: 'spring-jdbc', version: '6.0.11'
+    implementation group: 'org.springframework', name: 'spring-tx', version: '6.0.11'
+
+
+
     // https://mvnrepository.com/artifact/org.projectlombok/lombok  //https://projectlombok.org/setup/gradle에서 가져온 코드
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
@@ -52,6 +57,25 @@ dependencies {
 
     //HikariCP
     implementation group : "com.zaxxer", name : "HikariCP", version : "5.0.0"
+
+    // https://mvnrepository.com/artifact/org.mybatis/mybatis
+    implementation group: 'org.mybatis', name: 'mybatis', version: '3.5.9'
+    // https://mvnrepository.com/artifact/org.mybatis/mybatis-spring
+    implementation group: 'org.mybatis', name: 'mybatis-spring', version: '3.0.3'
+//    // https://mvnrepository.com/artifact/org.mybatis/mybatis-spring  //왜인지 2.0.6버전은 오류가 발생하고 3.0.3은 오류가 발생하지 않는다...
+//    implementation group: 'org.mybatis', name: 'mybatis-spring', version: '2.0.6'
+
+
+
+    // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.1'
+
+    //  자카르타는 jstl 사용하려면 아래 코드를 사용해야 함..
+    // https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api
+    implementation group: 'jakarta.servlet.jsp.jstl', name: 'jakarta.servlet.jsp.jstl-api', version: '3.0.0'
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/glassfish-jstl
+    implementation group: 'org.eclipse.jetty', name: 'glassfish-jstl', version: '11.0.20'
+
 
 }
 

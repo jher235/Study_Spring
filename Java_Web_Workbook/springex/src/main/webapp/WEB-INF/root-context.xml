@@ -2,10 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
-       https://www.springframework.org/schema/context/spring-context.xsd">
+       https://www.springframework.org/schema/context/spring-context.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
 
 <!--    <bean class="org.zerock.springex.sample.SampleDAO"></bean>-->
 
@@ -31,6 +32,15 @@
     <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
         <constructor-arg ref="hikariConfig"/>
     </bean>
+
+    <bean id="slqSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+<!--   mapperLocations는 XML 매퍼 파일들의 위치를 의미한다. mappers폴더 밑에 모든 파일을 허용하도록 **, 모든.xml을 허용하도록 *.xml을 설정한다.    -->
+        <property name="mapperLocations" value="classpath:/mappers/**/*.xml"/>
+    </bean>
+
+    <mybatis:scan base-package="org.zerock.springex.mapper"></mybatis:scan>
+
 
 
 </beans>
