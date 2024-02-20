@@ -3,6 +3,8 @@ package org.zerock.w2.dao;
 import lombok.Cleanup;
 import org.checkerframework.checker.units.qual.C;
 import org.zerock.w2.domain.MemberVO;
+import org.zerock.w2.dto.MemberDTO;
+import org.zerock.w2.util.MapperUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -33,4 +35,42 @@ public class MemberDAO {
 
         return  memberVO;
     }
+
+    public void updateUuid(String mid, String uuid) throws Exception {
+        String sql = "update tbl_member set uuid=? where mid=?";
+
+        @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
+        @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+        preparedStatement.setString(1,uuid);
+        preparedStatement.setString(2,mid);
+
+        preparedStatement.executeUpdate();
+
+    }
+
+    public MemberVO selectUuid(String uuid) throws Exception {
+
+        String query = "select mid, mpw, mname, uuid from tbl_member where uuid=?";
+
+        @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
+        @Cleanup PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+        preparedStatement.setString(1,uuid);
+
+        @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+
+        resultSet.next();
+
+        MemberVO vo = MemberVO.builder()
+                .mid(resultSet.getString(1))
+                .mpw(resultSet.getString(2))
+                .mname(resultSet.getString(3))
+                .uuid(resultSet.getString(4))
+                .build();
+
+        return vo;
+    }
+
+
 }
