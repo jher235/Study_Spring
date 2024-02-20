@@ -31,6 +31,7 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-core', version: '6.0.11'
     implementation group: 'org.springframework', name: 'spring-context', version: '6.0.11'
     implementation group: 'org.springframework', name: 'spring-test', version: '6.0.11'
+    implementation group: 'org.springframework', name: 'spring-webmvc', version: '6.0.11'
 
     // https://mvnrepository.com/artifact/org.projectlombok/lombok  //https://projectlombok.org/setup/gradle에서 가져온 코드
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
@@ -45,6 +46,12 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-core:2.22.1'
     // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j2-impl
     implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.22.1'
+
+    // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.1.4'
+
+    //HikariCP
+    implementation group : "com.zaxxer", name : "HikariCP", version : "5.0.0"
 
 }
 
