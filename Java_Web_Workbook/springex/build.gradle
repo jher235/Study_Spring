@@ -3,6 +3,10 @@ plugins {
     id 'war'
 }
 
+war {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
 group 'org.zerock'
 version '1.0-SNAPSHOT'
 

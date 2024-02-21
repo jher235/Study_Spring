@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.zerock.springex.dto.TodoDTO;
 
 @Controller
 @Log4j2
@@ -29,8 +30,11 @@ public class TodoController {
     }
 
     @PostMapping("/register")
-    public void registerPost(){
+    public void registerPost(TodoDTO dto){
         log.info("POST todo register.......");
+        log.info("TodoDTO : "+ dto);
     }
+
+
 
 }
