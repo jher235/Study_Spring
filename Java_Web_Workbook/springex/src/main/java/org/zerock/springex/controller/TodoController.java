@@ -61,7 +61,7 @@ public class TodoController {
         model.addAttribute("dtoList", todoService.getAll());
     }
 
-    @GetMapping("/read")
+    @GetMapping({"/read", "/modify"})
     public void read(Long tno, Model model){
 
         TodoDTO todoDTO = todoService.getOne(tno);
@@ -70,6 +70,16 @@ public class TodoController {
 
         model.addAttribute("dto", todoDTO);
 
+    }
+
+    @PostMapping("/remove")
+    public String remove(Long tno, RedirectAttributes redirectAttributes){
+        log.info("-----------remove---------");
+        log.info("tno: " + tno);
+
+        todoService.remove(tno);
+
+        return "redirect:/todo/list";
     }
 
 
