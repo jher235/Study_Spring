@@ -1,4 +1,4 @@
-package org.zerock.springex.sample;
+package org.zerock.springex.backup.sample;
 
 import org.springframework.stereotype.Repository;
 

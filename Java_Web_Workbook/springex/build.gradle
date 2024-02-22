@@ -80,6 +80,10 @@ dependencies {
     // https://mvnrepository.com/artifact/org.eclipse.jetty/glassfish-jstl
     implementation group: 'org.eclipse.jetty', name: 'glassfish-jstl', version: '11.0.20'
 
+    // https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
+    implementation group: 'org.hibernate.validator', name: 'hibernate-validator', version: '8.0.1.Final'
+
+
 
 }
 
