@@ -11,6 +11,7 @@ import org.zerock.springex.dto.TodoDTO;
 import org.zerock.springex.service.TodoService;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Log4j2
 @ExtendWith(SpringExtension.class)
@@ -49,7 +50,20 @@ public class TodoMapperTests {
                 .build();
 
         todoService.register(todoDTO);
-
     }
 
+    @Test
+    public void testSelectAll(){
+        List<TodoVO> voList = todoMapper.selectAll();
+
+        voList.forEach(vo -> log.info(vo));
+    }
+
+    @Test
+    public void testSelectOne(){
+        TodoVO todoVO = todoMapper.selectOne(3L);
+
+        log.info(todoVO);
+
+    }
 }
