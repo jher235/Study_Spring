@@ -37,26 +37,26 @@
         <div class="card">
             <h5 class="card-header">Featured</h5>
             <div class="card-body">
-                <form action="todo/register" method="post">
+                <form action="/todo/register" method="post">
 
                     <div class="mb-3 row">
                         <label for="inputTitle" class="col-sm-2 col-form-label">Title</label>
                         <div class="col-sm-10">
-                            <input type="text" name="title" class="form-control" placeholder="Title">
+                            <input type="text" id="inputTitle" name="title" class="form-control" placeholder="Title">
                         </div>
                     </div>
 
                     <div class="mb-3 row">
                         <label for="inputDueDate" class="col-sm-2 col-form-label">DueDate</label>
                         <div class="col-sm-10">
-                            <input type="date" name="dueDate" class="form-control" placeholder="dueDate">
+                            <input type="date" id="inputDueDate" name="dueDate" class="form-control" placeholder="dueDate">
                         </div>
                     </div>
 
                     <div class="mb-3 row">
                         <label for="inputWriter" class="col-sm-2 col-form-label">Writer</label>
                         <div class="col-sm-10">
-                            <input type="text" name="writer" class="form-control" placeholder="Writer">
+                            <input type="text" id="inputWriter" name="writer" class="form-control" placeholder="Writer">
                         </div>
                     </div>
 
