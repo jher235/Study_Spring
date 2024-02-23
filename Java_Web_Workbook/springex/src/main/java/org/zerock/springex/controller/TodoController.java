@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.springex.dto.PageRequestDTO;
 import org.zerock.springex.dto.TodoDTO;
 import org.zerock.springex.service.TodoService;
 
@@ -54,12 +55,24 @@ public class TodoController {
         return "redirect:/todo/list";
     }
 
-    @RequestMapping("/list")
-    public void list(Model model){
-        log.info("todo list.........");
+//    @RequestMapping("/list")
+//    public void list(Model model){
+//        log.info("todo list.........");
+//
+//        model.addAttribute("dtoList", todoService.getAll());
+//    }
 
-        model.addAttribute("dtoList", todoService.getAll());
+    @RequestMapping("/list")
+    public void list(@Valid PageRequestDTO pageRequestDTO, BindingResult bindingResult, Model model){
+        log.info(pageRequestDTO);
+
+        if (bindingResult.hasErrors()){
+            pageRequestDTO = PageRequestDTO.builder().build();
+        }
+
+        model.addAttribute("responseDTO", todoService.getList(pageRequestDTO));
     }
+
 
     @GetMapping({"/read", "/modify"})
     public void read(Long tno, Model model){
