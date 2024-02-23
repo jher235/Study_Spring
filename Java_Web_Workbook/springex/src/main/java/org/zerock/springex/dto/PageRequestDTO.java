@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.checkerframework.checker.units.qual.N;
 
 import java.io.UnsupportedEncodingException;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Log4j2
 public class PageRequestDTO {
 
     @Builder.Default
@@ -88,7 +90,9 @@ public class PageRequestDTO {
             builder.append("&to="+to.toString());
         }
 
-        return builder().toString();
+        log.info(builder.toString());
+
+        return builder.toString();
 
     }
 
