@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.3'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'org.zerock'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+//  테스트에 lombok적용
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core      //mockito 5버전이상은 jdk 17과 호환이 안된다...
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.11.0'
+//    // https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy
+//    implementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.12'
+//    // https://mvnrepository.com/artifact/org.objenesis/objenesis
+//    implementation group: 'org.objenesis', name: 'objenesis', version: '3.2'
+//    // https://mvnrepository.com/artifact/org.mockito/mockito-inline
+//    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '5.2.0'
+
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
