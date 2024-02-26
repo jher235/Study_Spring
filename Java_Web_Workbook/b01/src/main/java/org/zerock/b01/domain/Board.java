@@ -9,11 +9,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Board {
+public class Board extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long tno;
+    private Long bno;
 
     @Column(length = 500, nullable = false)//칼럼의 길이, null허용 여부
     private String title;
@@ -23,4 +23,9 @@ public class Board {
 
     @Column(length = 50, nullable = false)
     private String writer;
+
+    public void change(String title, String content){
+        this.title = title;
+        this.content = content;
+    }
 }
