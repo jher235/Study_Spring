@@ -34,4 +34,17 @@ class BoardServiceImplTest {
 
     }
 
+    @Test
+    public void testModify(){
+
+        BoardDTO boardDTO = BoardDTO.builder()
+                .bno(102L)
+                .title("modify test...")
+                .content("modify test....")
+                .build();
+
+        boardService.modify(boardDTO);
+
+    }
+
 }
