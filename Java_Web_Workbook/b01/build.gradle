@@ -69,6 +69,9 @@ dependencies {
 
             "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta")
 
+    // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.1'
+
 }
 
 tasks.named('test') {
