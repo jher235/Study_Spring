@@ -1,10 +1,12 @@
 package org.zerock.b01.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,6 +37,7 @@ public class SampleController {
 
     }
 
+    @Operation(summary = "hello")
     @GetMapping("/hello")
     public void hello(Model model){
 
@@ -44,6 +47,17 @@ public class SampleController {
 
     }
 
+    @Operation(summary = "upload")
+    @GetMapping("/upload")
+    public void upload(MultipartFile multipartFile){
+
+        log.info("multipart......................");
+
+
+    }
+
+
+    @Operation(summary = "ex1")
     @GetMapping("/ex/ex1")
     public void ex1(Model model){
 
@@ -53,6 +67,7 @@ public class SampleController {
 
     }
 
+    @Operation(summary = "ex2")
     @GetMapping("/ex/ex2")
     public void ex2(Model model){
         log.info("ex/ex2.....................");
@@ -78,6 +93,7 @@ public class SampleController {
 
     }
 
+    @Operation(summary = "ex3")
     @GetMapping("ex/ex3")
     public void ex3(Model model){
         model.addAttribute("arr", new String[]{"AAA", "BBB", "CCC"});

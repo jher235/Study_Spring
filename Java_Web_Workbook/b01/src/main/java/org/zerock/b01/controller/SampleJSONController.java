@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SampleJSONController {
 
     //배열을 출력
-    @GetMapping("/helloArr")
+    @GetMapping("/api/helloArr")
     public String[] helloArr(){
         log.info("helloArr.....................");
         return new String[]{"AAA","BBB","CCC"};
