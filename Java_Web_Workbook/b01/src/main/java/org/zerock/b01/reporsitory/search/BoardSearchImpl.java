@@ -1,14 +1,18 @@
 package org.zerock.b01.reporsitory.search;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.expression.spel.ast.Projection;
 import org.zerock.b01.domain.Board;
 import org.zerock.b01.domain.QBoard;
+import org.zerock.b01.domain.QReply;
+import org.zerock.b01.dto.BoardListReplyCountDTO;
 
 import java.util.List;
 
@@ -83,5 +87,63 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
 
         return new PageImpl<>(list,pageable,count);
 
+    }
+
+    @Override
+    public Page<BoardListReplyCountDTO> searchWithReplyCount(String[] types, String keyword, Pageable pageable) {
+
+        QBoard board = QBoard.board;
+        QReply reply = QReply.reply;
+
+        JPQLQuery<Board> query = from(board);
+
+//        이 코드는 Board와 Reply를 결합하는데, Reply의 board 필드가 Board 엔티티와 같은 Reply만 결합하라는 의미입니다.
+        query.leftJoin(reply).on(reply.board.eq(board));    //left join을 사용할 때는 on()을 이용해 조인 조건을 지정한다.
+
+        query.groupBy(board);     //조인 처리 후에 게시물당 처리가 필요하므로 groupBy()를 적용
+
+
+        if((types != null && types.length>0)&& keyword !=null){
+            BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+            for(String type: types){
+
+                switch (type){
+                    case "t":
+                        booleanBuilder.or(board.title.contains(keyword));
+                        break;
+                    case "c":
+                        booleanBuilder.or(board.content.contains(keyword));
+                        break;
+                    case "w":
+                        booleanBuilder.or(board.writer.contains(keyword));
+                        break;
+
+                }
+            }
+            query.where(booleanBuilder);
+        }
+
+        //bno>0
+        query.where(board.bno.gt(0L));
+
+
+
+        JPQLQuery<BoardListReplyCountDTO> dtojpqlQuery = query.select(Projections.
+                bean(BoardListReplyCountDTO.class,
+                        board.bno,
+                        board.title,
+                        board.writer,
+                        board.regDate,
+                        reply.count().as("replyCount")
+                        ));
+
+        this.getQuerydsl().applyPagination(pageable, dtojpqlQuery);
+
+        List<BoardListReplyCountDTO> dtoList = dtojpqlQuery.fetch();
+
+        long count = dtojpqlQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, count);
     }
 }
