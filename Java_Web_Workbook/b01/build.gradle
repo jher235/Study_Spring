@@ -91,4 +91,4 @@ sourceSets {
     }
 }
 
-//compileJava.dependsOn('clean')
+compileJava.dependsOn('clean')
