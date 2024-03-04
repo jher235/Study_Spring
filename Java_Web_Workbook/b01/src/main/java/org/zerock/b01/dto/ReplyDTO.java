@@ -21,8 +21,10 @@ public class ReplyDTO {
 
     @NotNull
     private Long bno;
+
     @NotEmpty
     private String replyText;
+
     @NotEmpty
     private String replyer;
 
