@@ -15,12 +15,10 @@
                     Board Read
                 </div>
                 <div class="card-body">
-
                     <div class="input-group mb-3">
                         <span class="input-group-text">Bno</span>
                         <input type="text" class="form-control" th:value="${dto.bno}" readonly>
                     </div>
-
                     <div class="input-group mb-3">
                         <span class="input-group-text">Title</span>
                         <input type="text" class="form-control" th:value="${dto.title}" readonly>
@@ -40,7 +38,6 @@
                         <span class="input-group-text">RegDate</span>
                         <input type="text" class="form-control" th:value="${#temporals.format(dto.regDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
                     </div>
-
                     <div class="input-group mb-3">
                         <span class="input-group-text">ModDate</span>
                         <input type="text" class="form-control" th:value="${#temporals.format(dto.modDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
@@ -48,7 +45,7 @@
 
                     <div class="my-4">
                         <div class="float-end" th:with="link = ${pageRequestDTO.getLink()}">
-                            <a th:href="|@{/board/list}?${link}|"  class="text-decoration-none">
+                            <a th:href="|@{/board/list}?${link}|" class="text-decoration-none">
                                 <button type="button" class="btn btn-primary">List</button>
                             </a>
                             <a th:href="|@{/board/modify(bno=${dto.bno})}&${link}|" class="text-decoration-none">
@@ -82,12 +79,61 @@
         </div>
     </div>
 
+
+    <div class="modal registerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Register Reply</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Reply Text</span>
+                        <input type="text" class="form-control replyText" >
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Replyer</span>
+                        <input type="text" class="form-control replyer" >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary registerBtn">Register</button>
+                    <button type="button" class="btn btn-outline-dark closeRegisterBtn" >Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end regist modal -->
+
+    <div class="modal modifyModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title replyHeader"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Reply Text</span>
+                        <input type="text" class="form-control modifyText" >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info modifyBtn">Modify</button>
+                    <button type="button" class="btn btn-danger removeBtn">Remove</button>
+                    <button type="button" class="btn btn-outline-dark closeModifyBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div> <!--modifyModal -->
+
+
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <script src="/js/reply.js"/>
+    <script src="/js/reply.js"></script>
 
 </div>
-
 
 <script layout:fragment="script" th:inline="javascript">
 
@@ -147,5 +193,39 @@
 
     // printReplies(1,10)
     printReplies(1,10,true) //처음부터 마지막 페이지부터 댓글보기
+
+    //댓글 등록 모달
+    const registerModal = new bootstrap.Modal(document.querySelector(".registerModal"))
+
+    //registerModel
+    const registerBtn = document.querySelector(".registerBtn")
+    const replyText = document.querySelector(".replyText")
+    const replyer = document.querySelector(".replyer")
+    const closeRegisterBtn = document.querySelector(".closeRegisterBtn")
+
+    document.querySelector(".addReplyBtn").addEventListener("click", function (e){
+        registerModal.show()
+    }, false)   //false는 이벤트의 버블링과 캡처링
+
+    closeRegisterBtn.addEventListener("click", function (e){
+        registerModal.hide()
+    }, false)
+
+    registerBtn.addEventListener("click", function (e){
+        const replyObj = {
+            bno:bno,
+            replyText:replyText.value,
+            replyer:replyer.value}
+
+        addReply(replyObj).then(result=>{
+            alert(result.rno)
+            registerModal.hide()
+            replyText.value=''
+            replyer.value=''
+            printReplies(1,10,true)//댓글 목록 갱신
+        }).catch(e=>{
+            alert("Exception...")
+        })
+    }, false)
 
 </script>
