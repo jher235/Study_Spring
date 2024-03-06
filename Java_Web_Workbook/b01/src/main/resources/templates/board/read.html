@@ -228,4 +228,23 @@
         })
     }, false)
 
+    let page = 1
+    let size = 10
+
+    replyPaging.addEventListener("click", function (e){
+
+        e.preventDefault()
+        e.stopPropagation()
+
+        const target = e.target
+
+        if(!target || target.tagName != 'A'){
+            return
+        }
+
+        const pageNum = target.getAttribute("data-page")
+        page = pageNum
+        printReplies(page, size)
+    }, false)
+
 </script>
