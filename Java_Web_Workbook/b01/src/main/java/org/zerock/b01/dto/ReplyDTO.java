@@ -2,6 +2,7 @@ package org.zerock.b01.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class ReplyDTO {
     private Long rno;
 
     @NotNull
+//    @Column(name = "bno")
     private Long bno;
 
     @NotEmpty
