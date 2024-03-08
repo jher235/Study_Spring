@@ -12,7 +12,7 @@ import org.zerock.b01.domain.Reply;
 import org.zerock.b01.dto.PageRequestDTO;
 import org.zerock.b01.dto.PageResponseDTO;
 import org.zerock.b01.dto.ReplyDTO;
-import org.zerock.b01.reporsitory.ReplyRepository;
+import org.zerock.b01.repository.ReplyRepository;
 
 
 import java.util.List;

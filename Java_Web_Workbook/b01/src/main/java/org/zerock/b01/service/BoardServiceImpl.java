@@ -1,6 +1,5 @@
 package org.zerock.b01.service;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -8,13 +7,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.ModelMap;
 import org.zerock.b01.domain.Board;
 import org.zerock.b01.dto.BoardDTO;
 import org.zerock.b01.dto.BoardListReplyCountDTO;
 import org.zerock.b01.dto.PageRequestDTO;
 import org.zerock.b01.dto.PageResponseDTO;
-import org.zerock.b01.reporsitory.BoardRepository;
+import org.zerock.b01.repository.BoardRepository;
 
 import java.util.List;
 import java.util.Optional;
