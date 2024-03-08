@@ -47,14 +47,14 @@ public class SampleController {
 
     }
 
-    @Operation(summary = "upload")
-    @GetMapping("/upload")
-    public void upload(MultipartFile multipartFile){
-
-        log.info("multipart......................");
-
-
-    }
+//    @Operation(summary = "upload")
+//    @GetMapping("/upload")
+//    public void upload(MultipartFile multipartFile){
+//
+//        log.info("multipart......................");
+//
+//
+//    }
 
 
     @Operation(summary = "ex1")
