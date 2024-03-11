@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.zerock.b01.domain.Board;
+import org.zerock.b01.domain.BoardImage;
 import org.zerock.b01.dto.BoardListReplyCountDTO;
 
 import java.util.List;
@@ -168,6 +169,23 @@ public class BoardRepositoryTests {
         }
 
         boardRepository.save(board);
+
+    }
+
+    @Test
+    public void testReadWithImages(){
+
+        //반드시 존재하는 bno를 사용해야함.
+        Optional<Board> result = boardRepository.findByIdWithImages(1L);
+
+        Board board = result.orElseThrow();
+
+        log.info(board);
+        log.info("----------------");
+//        log.info(board.getImageSet());
+        for(BoardImage boardImage : board.getImageSet()){
+            log.info(boardImage);
+        }
 
     }
 
