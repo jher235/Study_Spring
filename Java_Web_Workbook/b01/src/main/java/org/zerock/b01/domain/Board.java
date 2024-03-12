@@ -30,7 +30,7 @@ public class Board extends BaseEntity{
     @OneToMany(mappedBy = "board",  //BoardImage의 board변수
             cascade = {CascadeType.ALL},
             fetch = FetchType.LAZY,
-            orphanRemoval = true
+            orphanRemoval = true    //부모-자식 관계에서 자식의 생명 주기를 부모에 종속
     )
     @Builder.Default
     private Set<BoardImage> imageSet = new HashSet<>();

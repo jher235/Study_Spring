@@ -27,6 +27,9 @@ public class BoardRepositoryTests {
     @Autowired
     private BoardRepository boardRepository;
 
+    @Autowired
+    private ReplyRepository replyRepository;    //게시글 삭제 시 댓글 삭제를 위함
+
     @Test
     public void testInsert(){
         IntStream.rangeClosed(1,100).forEach(i->{
@@ -65,7 +68,7 @@ public class BoardRepositoryTests {
 
     @Test
     public void testDelete(){
-        Long bno = 1L;
+        Long bno = 3L;
 
         boardRepository.deleteById(bno);
     }
@@ -208,6 +211,19 @@ public class BoardRepositoryTests {
         }
 
         boardRepository.save(board);
+
+    }
+
+    @Test
+    @Transactional
+    @Commit
+    public void testRemoveAll(){
+
+        Long bno = 1L;
+
+        replyRepository.deleteByBoard_Bno(bno);
+
+        boardRepository.deleteById(bno);
 
     }
 

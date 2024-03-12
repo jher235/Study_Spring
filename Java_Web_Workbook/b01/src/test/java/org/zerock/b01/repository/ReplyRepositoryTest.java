@@ -21,7 +21,7 @@ class ReplyRepositoryTest {
     @Test
     public void testInsert(){
 
-        Long bno = 100L;
+        Long bno = 3L;
 
         Board board = Board.builder().bno(bno).build();
 

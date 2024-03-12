@@ -11,4 +11,6 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
     //사용자 정의 JPQL 쿼리을 사용한다는 것. :bno는 파라미터로 전송되는 값. bno의 댓글들을 모두 가져옴
     @Query("select r from Reply r where r.board.bno = :bno")
     Page<Reply> listOfBoard(Long bno, Pageable pageable);
+
+    void deleteByBoard_Bno(Long bno);
 }
