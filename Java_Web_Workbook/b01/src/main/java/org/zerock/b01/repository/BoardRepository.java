@@ -15,7 +15,7 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardSearch
     @Query(value = "select now()", nativeQuery = true)
     String getTime();
 
-    @EntityGraph(attributePaths = {"imageSet"})
+    @EntityGraph(attributePaths = {"imageSet"}) //이미지 셋 가져올 때 eager 로딩 사용할 수 있도록 함
     @Query("select b from Board b where b.bno =:bno")
     Optional<Board> findByIdWithImages(Long bno);
 

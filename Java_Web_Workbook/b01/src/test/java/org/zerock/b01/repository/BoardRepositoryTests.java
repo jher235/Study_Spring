@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 import org.zerock.b01.domain.Board;
 import org.zerock.b01.domain.BoardImage;
 import org.zerock.b01.dto.BoardListReplyCountDTO;
@@ -186,6 +188,26 @@ public class BoardRepositoryTests {
         for(BoardImage boardImage : board.getImageSet()){
             log.info(boardImage);
         }
+
+    }
+
+    @Transactional
+    @Commit //작업이 성공적으로 완료되면 변경사항을 커밋(저장)하도록 설정
+    @Test
+    public void testModifyImages(){
+        Optional<Board> result = boardRepository.findByIdWithImages(1L);
+
+        Board board = result.orElseThrow();
+
+//        기존 첨부 파일 삭제
+        board.clearImages();
+
+        //새로운 첨부파일 추가
+        for (int i=0;i<2;i++){
+            board.addImage(UUID.randomUUID().toString(), "updatefile"+i+".jpg");
+        }
+
+        boardRepository.save(board);
 
     }
 
