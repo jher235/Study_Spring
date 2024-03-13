@@ -1,6 +1,7 @@
 package org.zerock.b01.repository.search;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import lombok.extern.log4j.Log4j2;
@@ -11,9 +12,11 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.zerock.b01.domain.Board;
 import org.zerock.b01.domain.QBoard;
 import org.zerock.b01.domain.QReply;
+import org.zerock.b01.dto.BoardListAllDTO;
 import org.zerock.b01.dto.BoardListReplyCountDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 //구현 클래스는 반드시 '인터페이스 이름 + Impl'로 작성한다. 파일의 이름이 틀린 경우 제대로 동작하지 않으니 주의해야 함
@@ -151,7 +154,7 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
 //    Page<BoardListReplyCountDTO> 타입으로 결과를 반환함.
 //    여기서 BoardListReplyCountDTO는 게시글 정보와 해당 게시글의 댓글 수를 담는 DTO를 의미
     @Override
-    public Page<BoardListReplyCountDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
+    public Page<BoardListAllDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
 //        Querydsl 쿼리에서 사용될 엔티티의 메타 모델
         QBoard board = QBoard.board;
         QReply reply = QReply.reply;
@@ -165,18 +168,42 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
 //        .on은 조인을 수행할 때 사용할 조건을 지정. 그 뒤에가 조건임
         boardJPQLQuery.leftJoin(reply).on(reply.board.eq(board));  //left join
 
+        boardJPQLQuery.groupBy(board);
+
 //        페이지네이션 정보(pageable)를 쿼리에 적용함.
         getQuerydsl().applyPagination(pageable, boardJPQLQuery);    //paging
 
-//        결과를  List<Board> 형태로 저장
-        List<Board> boardList = boardJPQLQuery.fetch();
+////        결과를  List<Board> 형태로 저장 //DTO를 BoardListAllDTO로 바꾸며 형태가 바뀜
+//        List<Board> boardList = boardJPQLQuery.fetch();
 
-        boardList.forEach(board1 -> {
-            System.out.println(board1.getBno());
-            System.out.println(board1.getImageSet());
-            System.out.println("---------------------");
-        });
+//        댓글 수를 튜플값으로 저장
+        JPQLQuery<Tuple> tupleJPQLQuery = boardJPQLQuery.select(board, reply.countDistinct());
 
-        return null;
+        List<Tuple> tupleList = tupleJPQLQuery.fetch();
+
+//        지금 Board에는 reply 정보가 없고 reply에만 board정보가 있는 구조 형태이므로 tuple을 로드해서 게시물의 나머지 정보를 가져옴
+        List<BoardListAllDTO> dtoList = tupleList.stream().map(tuple -> {
+
+            Board board1 = (Board) tuple.get(board);
+            long replyCount = tuple.get(1,Long.class);
+
+            BoardListAllDTO dto = BoardListAllDTO.builder()
+                    .bno(board1.getBno())
+                    .title(board1.getTitle())
+                    .writer(board1.getWriter())
+                    .regDate(board1.getRegDate())
+                    .replyCount(replyCount)
+                    .build();
+
+            //boardImage를 BoardImageDTO 처리할 부분
+
+            return dto;
+
+        }).collect(Collectors.toList());
+
+
+        long totalCount = boardJPQLQuery.fetchCount();
+
+        return new PageImpl<>(dtoList, pageable, totalCount);
     }
 }
