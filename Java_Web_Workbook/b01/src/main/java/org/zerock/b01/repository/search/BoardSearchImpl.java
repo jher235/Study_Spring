@@ -145,4 +145,38 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
 
         return new PageImpl<>(dtoList, pageable, count);
     }
+
+
+//    검색 유형(types), 검색 키워드(keyword), 페이지네이션 정보(pageable)를 기반으로 게시판 목록을 조회하고,
+//    Page<BoardListReplyCountDTO> 타입으로 결과를 반환함.
+//    여기서 BoardListReplyCountDTO는 게시글 정보와 해당 게시글의 댓글 수를 담는 DTO를 의미
+    @Override
+    public Page<BoardListReplyCountDTO> searchWithAll(String[] types, String keyword, Pageable pageable) {
+//        Querydsl 쿼리에서 사용될 엔티티의 메타 모델
+        QBoard board = QBoard.board;
+        QReply reply = QReply.reply;
+
+//        from(board)를 통해 Board 엔티티를 조회하는 JPQL 쿼리를 생성
+        JPQLQuery<Board> boardJPQLQuery = from(board);
+
+//        생성된 쿼리에 대해 Reply 엔티티와의 왼쪽 조인을 추가
+//        왼쪽에 있는 테이블(boardJPQLQuery가 대표하는 Board 엔티티)의 모든 레코드와
+//        오른쪽 테이블(여기서는 Reply 엔티티)에서 조건에 맞는 레코드를 함께 가져오는 조인 방식
+//        .on은 조인을 수행할 때 사용할 조건을 지정. 그 뒤에가 조건임
+        boardJPQLQuery.leftJoin(reply).on(reply.board.eq(board));  //left join
+
+//        페이지네이션 정보(pageable)를 쿼리에 적용함.
+        getQuerydsl().applyPagination(pageable, boardJPQLQuery);    //paging
+
+//        결과를  List<Board> 형태로 저장
+        List<Board> boardList = boardJPQLQuery.fetch();
+
+        boardList.forEach(board1 -> {
+            System.out.println(board1.getBno());
+            System.out.println(board1.getImageSet());
+            System.out.println("---------------------");
+        });
+
+        return null;
+    }
 }

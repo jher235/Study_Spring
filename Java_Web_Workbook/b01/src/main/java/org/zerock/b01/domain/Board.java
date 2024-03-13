@@ -2,6 +2,7 @@ package org.zerock.b01.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +34,7 @@ public class Board extends BaseEntity{
             orphanRemoval = true    //부모-자식 관계에서 자식의 생명 주기를 부모에 종속
     )
     @Builder.Default
+    @BatchSize(size = 20) // imageSet을 조회시 20번만큼 한번에 in조건으로 사용된다.
     private Set<BoardImage> imageSet = new HashSet<>();
 
     public void change(String title, String content){
