@@ -263,9 +263,6 @@ public class BoardRepositoryTests {
         log.info("--------------------");
         log.info(result.getTotalElements());
 
-        log.info(result);
-        log.info(result.getContent());
-
         result.getContent().forEach(boardListAllDTO -> log.info(boardListAllDTO));
 
     }
