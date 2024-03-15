@@ -25,46 +25,29 @@ public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
 
-//    @Override
-//    public Long register(BoardDTO boardDTO) {
-//        Board board = modelMapper.map(boardDTO, Board.class);
-//        Long bno = boardRepository.save(board).getBno();
-//
-//        return bno;
-//    }
-
     @Override
     public Long register(BoardDTO boardDTO) {
+//        Board board = modelMapper.map(boardDTO, Board.class);
         Board board = dtoToEntity(boardDTO);
-
         Long bno = boardRepository.save(board).getBno();
 
         return bno;
     }
 
 
-//    @Override
-//    public BoardDTO readOne(Long bno) {
-//        Optional<Board> result = boardRepository.findById(bno);
-//
-//        Board board = result.orElseThrow();
-//
-//        BoardDTO boardDTO = modelMapper.map(board, BoardDTO.class);
-//
-//        return boardDTO;
-//    }
-
     @Override
     public BoardDTO readOne(Long bno) {
+//        Optional<Board> result = boardRepository.findById(bno);
         //board_image까지 조인 처리되는 findByIdWithImages()를 이용
         Optional<Board> result = boardRepository.findByIdWithImages(bno);
 
         Board board = result.orElseThrow();
 
-        BoardDTO boardDTO = entityToDTO(board);
+        BoardDTO boardDTO = modelMapper.map(board, BoardDTO.class);
 
         return boardDTO;
     }
+
 
     @Override
     public void modify(BoardDTO boardDTO) {
@@ -75,9 +58,17 @@ public class BoardServiceImpl implements BoardService{
 
         board.change(boardDTO.getTitle(),boardDTO.getContent());
 
+        //기존 첨부파일 삭제
+        board.clearImages();
+
+        if(boardDTO.getFileNames()!=null){
+            for (String fileName : boardDTO.getFileNames()){
+                String[] arr = fileName.split("_");
+                board.addImage(arr[0], arr[1]); //파라미터가 uuid, filename
+            }
+        }
+
         boardRepository.save(board);
-
-
     }
 
     @Override

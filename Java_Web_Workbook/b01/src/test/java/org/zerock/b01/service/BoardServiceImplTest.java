@@ -42,11 +42,14 @@ class BoardServiceImplTest {
     @Test
     public void testModify(){
 
+        //변경에 필요한 데이터
         BoardDTO boardDTO = BoardDTO.builder()
-                .bno(102L)
+                .bno(101L)
                 .title("modify test...")
                 .content("modify test....")
                 .build();
+
+        boardDTO.setFileNames(Arrays.asList(UUID.randomUUID()+"_zzz.jpg"));
 
         boardService.modify(boardDTO);
     }
@@ -101,6 +104,13 @@ class BoardServiceImplTest {
         for (String fileName : boardDTO.getFileNames()){
             log.info(fileName);
         }
+    }
+
+    @Test
+    public void removeAll(){
+        Long bno = 1L;
+
+        boardService.remove(bno);
     }
 
 }
