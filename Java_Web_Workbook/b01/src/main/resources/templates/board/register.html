@@ -35,12 +35,11 @@
                                 <div class="float-end uploadHidden">
                                     <button type="button" class="btn btn-primary uploadFileBtn">Add Files</button>
                                 </div>
-
                             </div>
 
                             <div class="my-4">
                                 <div class="float-end">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-primary submitBtn">Submit</button>
                                     <button type="reset" class="btn btn-secondary">Reset</button>
                                 </div>
                             </div>
@@ -122,7 +121,7 @@
             }
 
             uploadToServer(formObj).then(result => {
-                // console.log(result)
+                console.log(result)
                 for(const uploadResult of result){
                     showUploadFile(uploadResult)
                 }
@@ -162,5 +161,31 @@
                 targetDiv.remove();
             })
         }
+
+        document.querySelector(".submitBtn").addEventListener("click", function(e){
+
+            e.preventDefault()
+            e.stopPropagation()
+
+            const target = document.querySelector(".uploadHidden")
+
+            const uploadFiles = uploadResult.querySelectorAll("img")
+
+            console.log(uploadFiles)
+            console.log(uploadFiles.length)
+
+            let str = ''
+
+            for(let i =0; i<uploadFiles.length;i++){
+                const uploadFile = uploadFiles[i]
+                const imgLink = uploadFile.getAttribute("src")
+
+                str += `<input type='hidden' name='fileNames' value="${imgLink}">`
+            }
+
+            target.innerHTML = str;
+
+            document.querySelector("form").submit();
+        },false)
 
     </script>
