@@ -26,10 +26,11 @@ public class PageResponseDTO<E> {
 
     private List<E> dtoList;
 
+//    제네릭 메서드
     @Builder(builderMethodName = "withAll")
     public PageResponseDTO(PageRequestDTO pageRequestDTO, List<E> dtoList, int total){
 
-        if (total<0) return;
+        if (total<=0) return;
 
         this.page = pageRequestDTO.getPage();
         this.size = pageRequestDTO.getSize();

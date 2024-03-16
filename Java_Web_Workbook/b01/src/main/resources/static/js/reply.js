@@ -11,6 +11,7 @@ async function getList({bno, page, size, goLast}){
     if(goLast){
         const total = result.data.total
         const lastPage = parseInt(Math.ceil(total/size))
+
         return getList({bno:bno, page:lastPage, size:size})
     }
 

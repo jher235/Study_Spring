@@ -22,6 +22,8 @@ public interface BoardService {
     //게시글의 이미지와 댓글의 숫자까지 처리
     PageResponseDTO<BoardListAllDTO> listWithAll(PageRequestDTO pageRequestDTO);
 
+
+
 //    default 메서드는 인터페이스를 구현하는 클래스가 해당 메서드를 구현하지 않아도 되는 기본 구현을 제공
     default Board dtoToEntity(BoardDTO boardDTO){
 
