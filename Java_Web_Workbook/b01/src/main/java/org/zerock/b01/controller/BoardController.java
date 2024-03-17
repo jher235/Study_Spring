@@ -27,7 +27,9 @@ public class BoardController {
     public void list(PageRequestDTO pageRequestDTO, Model model){
 //        PageResponseDTO responseDTO = boardService.list(pageRequestDTO);
 
-        PageResponseDTO responseDTO = boardService.listWithReplyCount(pageRequestDTO);
+//        PageResponseDTO responseDTO = boardService.listWithReplyCount(pageRequestDTO);
+
+        PageResponseDTO responseDTO = boardService.listWithAll(pageRequestDTO);
 
         log.info(responseDTO);
 
@@ -46,7 +48,7 @@ public class BoardController {
         log.info("board Post register..........");
 
         if(bindingResult.hasErrors()){
-            log.info("has error");
+            log.info("has errors.........");
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
 
             return "redirect:/board/register";
