@@ -29,6 +29,11 @@ public class BoardServiceImpl implements BoardService{
     public Long register(BoardDTO boardDTO) {
 //        Board board = modelMapper.map(boardDTO, Board.class);
         Board board = dtoToEntity(boardDTO);
+
+        log.info(boardDTO);
+
+        log.info(board);
+
         Long bno = boardRepository.save(board).getBno();
 
         return bno;
@@ -38,12 +43,18 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public BoardDTO readOne(Long bno) {
 //        Optional<Board> result = boardRepository.findById(bno);
+
         //board_image까지 조인 처리되는 findByIdWithImages()를 이용
         Optional<Board> result = boardRepository.findByIdWithImages(bno);
 
         Board board = result.orElseThrow();
 
-        BoardDTO boardDTO = modelMapper.map(board, BoardDTO.class);
+        log.info(board);
+
+//        BoardDTO boardDTO = modelMapper.map(board, BoardDTO.class);
+        BoardDTO boardDTO = entityToDTO(board);
+
+        log.info(boardDTO);
 
         return boardDTO;
     }

@@ -54,10 +54,13 @@
                         </div>
                     </div>
 
-
                 </div><!--end card body-->
 
-
+                <div class="col">
+                    <div class="card" th:if="${dto.fileNames != null && dto.fileNames.size() > 0}">
+                        <img class="card-img-top" th:each="fileName: ${dto.fileNames}" th:src="|/view/${fileName}|">
+                    </div>
+                </div>
 
             </div><!--end card-->
         </div><!-- end col-->
@@ -142,6 +145,8 @@
 
     const replyList = document.querySelector('.replyList')  //댓글 목록 DOM
     const replyPaging = document.querySelector('.replyPaging')  //페이지 목록 DOM
+
+    console.log([[${dto.fileNames}]])
 
     function printList(dtoList){    //댓글 목록 출력
         let str = '';
