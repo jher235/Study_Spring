@@ -31,7 +31,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .username("user1") // 사용자 이름
 //                .password("{noop}password") // 사용자 비밀번호, {noop}은 패스워드 인코딩을 사용하지 않음을 의미
                 .password(passwordEncoder.encode("1111"))//패스워드 인코딩 필요
-                .roles("ROLE_USER") // 사용자 권한, 여기서는 "USER" 권한을 부여
+//                .roles("ROLE_USER") // 사용자 권한, 여기서는 "USER" 권한을 부여
+                .roles("USER")
                 .build();
 
 

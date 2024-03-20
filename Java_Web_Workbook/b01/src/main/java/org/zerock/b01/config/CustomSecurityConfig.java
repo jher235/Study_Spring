@@ -33,10 +33,12 @@ public class CustomSecurityConfig {
         http.formLogin(fLogin -> {
             fLogin.loginPage("/member/login");
 //            fLogin.loginPage("/login");
-
-
         });
 
+        http.csrf(config->{
+            config.disable();   //CSFR토큰을 비활성화
+        });
+        
         return http.build();
     }
 
