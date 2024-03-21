@@ -13,13 +13,22 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.zerock.b01.security.CustomUserDetailsService;
+
+import javax.sql.DataSource;
 
 @Log4j2
 @Configuration
-@RequiredArgsConstructor
+@RequiredArgsConstructor    //DataSource, userDetailsService 주입
 // @EnableMethodSecurity(prePostEnabled = true)  // 6.1 이후로 deprecated
 @EnableMethodSecurity(prePostEnabled = true)
 public class CustomSecurityConfig {
+
+    //주입 필요
+    private final DataSource dataSource;
+    private final CustomUserDetailsService userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -38,6 +47,13 @@ public class CustomSecurityConfig {
         http.csrf(config->{
             config.disable();   //CSFR토큰을 비활성화
         });
+
+        http.rememberMe(config->{
+            config.key("12345678");
+            config.tokenRepository(persistentTokenRepository());
+            config.userDetailsService(userDetailsService);
+            config.tokenValiditySeconds(60*60*24*30);   //한달 유지
+        });
         
         return http.build();
     }
@@ -50,6 +66,13 @@ public class CustomSecurityConfig {
 
         return (web -> web.ignoring().requestMatchers(PathRequest.
                 toStaticResources().atCommonLocations()));
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository(){
+        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
+        repo.setDataSource(dataSource);
+        return repo;
     }
 
 }
