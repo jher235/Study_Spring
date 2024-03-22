@@ -13,12 +13,15 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.zerock.b01.security.CustomUserDetailsService;
+import org.zerock.b01.security.handler.Custom403Handler;
 
 import javax.sql.DataSource;
 
+//스프링 시큐리티 설정
 @Log4j2
 @Configuration
 @RequiredArgsConstructor    //DataSource, userDetailsService 주입
@@ -39,6 +42,7 @@ public class CustomSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         log.info("------------configure---------------");
 
+        //커스텀 로그인 페이지
         http.formLogin(fLogin -> {
             fLogin.loginPage("/member/login");
 //            fLogin.loginPage("/login");
@@ -54,8 +58,18 @@ public class CustomSecurityConfig {
             config.userDetailsService(userDetailsService);
             config.tokenValiditySeconds(60*60*24*30);   //한달 유지
         });
+
+        //스프링 시큐리티의 예외 처리를 구성하기 위한 메서드. 이 메서드를 통해 예외 처리 방식을 사용자 정의
+        http.exceptionHandling(config->{
+            config.accessDeniedHandler(accessDeniedHandler());//접근 거부 상황이 발생했을 때의 처리 로직을 사용자 정의
+        });
         
         return http.build();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler(){
+        return new Custom403Handler();
     }
 
 //     정적 리소스에 대한 보안 필터 체인의 적용 무시
