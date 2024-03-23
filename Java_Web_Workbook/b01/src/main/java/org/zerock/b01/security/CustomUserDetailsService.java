@@ -22,10 +22,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-//    private PasswordEncoder passwordEncoder;
-
-    private final MemberRepository memberRepository;
-
+//    private PasswordEncoder passwordEncoder;      //기존에 임시로 사용하던 유저 정보
+//
 //    public  CustomUserDetailsService(){
 //        this.passwordEncoder = new BCryptPasswordEncoder();
 //    }
@@ -46,6 +44,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 //
 //        return userDetails;
 //    }
+
+
+//    사용자 인증 정보를 로드하여 UserDetails 객체로 반환하는 것이 목적이므로 패스워드 인코더는 이곳에서 사용 x
+    private final MemberRepository memberRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
