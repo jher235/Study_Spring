@@ -63,7 +63,11 @@ public class CustomSecurityConfig {
         http.exceptionHandling(config->{
             config.accessDeniedHandler(accessDeniedHandler());//접근 거부 상황이 발생했을 때의 처리 로직을 사용자 정의
         });
-        
+
+        http.oauth2Login(config -> {
+            config.loginPage("/member/login");  //사용자가 인증되지 않은 상태에서 보호된 리소스에 접근 시도할 때 리다이렉트될 로그인 페이지의 URL을 설정
+        });
+
         return http.build();
     }
 
@@ -88,5 +92,6 @@ public class CustomSecurityConfig {
         repo.setDataSource(dataSource);
         return repo;
     }
+
 
 }
