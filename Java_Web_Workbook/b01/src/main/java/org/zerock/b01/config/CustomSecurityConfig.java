@@ -14,10 +14,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.zerock.b01.security.CustomUserDetailsService;
 import org.zerock.b01.security.handler.Custom403Handler;
+import org.zerock.b01.security.handler.CustomSocialLoginSuccessHandler;
 
 import javax.sql.DataSource;
 
@@ -65,7 +67,10 @@ public class CustomSecurityConfig {
         });
 
         http.oauth2Login(config -> {
-            config.loginPage("/member/login");  //사용자가 인증되지 않은 상태에서 보호된 리소스에 접근 시도할 때 리다이렉트될 로그인 페이지의 URL을 설정
+            //사용자가 인증되지 않은 상태에서 보호된 리소스에 접근 시도할 때 리다이렉트될 로그인 페이지의 URL을 설정
+            config.loginPage("/member/login").successHandler(authenticationSuccessHandler());
+//            config.loginPage("/member/login");
+//            config.successHandler(authenticationSuccessHandler());
         });
 
         return http.build();
@@ -74,6 +79,11 @@ public class CustomSecurityConfig {
     @Bean
     public AccessDeniedHandler accessDeniedHandler(){
         return new Custom403Handler();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler(){
+        return new CustomSocialLoginSuccessHandler(passwordEncoder());
     }
 
 //     정적 리소스에 대한 보안 필터 체인의 적용 무시

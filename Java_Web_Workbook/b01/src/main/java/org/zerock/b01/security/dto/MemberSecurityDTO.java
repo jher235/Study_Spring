@@ -16,6 +16,8 @@ import java.util.Map;
 @ToString
 public class MemberSecurityDTO extends User implements OAuth2User {
 
+
+
     private String mid;
     private String mpw;
     private String email;
