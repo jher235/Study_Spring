@@ -42,6 +42,8 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.2.0'
 
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.11.0'//mockito 5버전이상은 jdk 17과 호환이 안된다...
+
 }
 
 tasks.named('test') {
