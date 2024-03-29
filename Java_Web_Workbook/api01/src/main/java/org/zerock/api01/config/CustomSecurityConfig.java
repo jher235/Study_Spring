@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.zerock.api01.security.APIUserDetailsService;
 import org.zerock.api01.security.filter.APILoginFilter;
+import org.zerock.api01.security.handler.APILoginSuccessHandler;
 
 import java.security.Security;
 
@@ -68,6 +69,12 @@ public class CustomSecurityConfig {
         //APILoginFilter - 특정 경로에 대한 요청을 처리하기 위한 커스텀 필터 설정
         APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
         apiLoginFilter.setAuthenticationManager(authenticationManager); //생성된 필터에 AuthenticationManager를 설정 -로그인 시도시 인증과정 처리
+
+        //APILoginSuccessHandler
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler();
+        //SuccessHandler 세팅
+        apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
+
 
         //APILoginFilter의 위치 조정 -> UsernamePasswordAuthenticationFilter 전에 추가하여 처리 순서 정의
         http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
