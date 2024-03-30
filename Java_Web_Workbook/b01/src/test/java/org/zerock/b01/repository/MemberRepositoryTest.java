@@ -61,7 +61,7 @@ class MemberRepositoryTests {
 
     }
 
-//    @Commit //테스트 성공시 커밋
+    @Commit //테스트 성공시 커밋 -> @Transactional과 함께 사용하지 않아서 그닥 차이는 없을 듯..
     @Test
     public void testModify(){
 
