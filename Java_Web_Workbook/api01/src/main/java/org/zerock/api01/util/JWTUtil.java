@@ -35,7 +35,7 @@ public class JWTUtil {
         payloads.putAll(valueMap);
 
         //테스트 시에는 짧은 유효 기간
-        int time = (1) * days;  //테스트는 분단위로 나중에 60*24 (일)단위 변경할 것
+        int time = (60 * 24) * days;  //테스트는 분단위로 나중에 60*24 (일)단위 변경할 것
 
         // JWT 토큰 생성: 설정한 헤더, 페이로드, 발행 시간, 만료 시간, 서명 알고리즘, 비밀키를 사용하여 JWT 토큰을 생성
         String jwtStr = Jwts.builder()
