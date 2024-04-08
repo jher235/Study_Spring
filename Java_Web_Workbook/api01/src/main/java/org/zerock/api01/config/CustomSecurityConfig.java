@@ -19,12 +19,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.zerock.api01.security.APIUserDetailsService;
 import org.zerock.api01.security.filter.APILoginFilter;
+import org.zerock.api01.security.filter.RefreshTokenFilter;
 import org.zerock.api01.security.filter.TokenCheckFilter;
 import org.zerock.api01.security.handler.APILoginSuccessHandler;
 import org.zerock.api01.util.JWTUtil;
 
 import java.security.Security;
-
 @Configuration
 @Log4j2
 @EnableWebSecurity
@@ -90,6 +90,10 @@ public class CustomSecurityConfig {
                 UsernamePasswordAuthenticationFilter.class
         );
 
+        //refreshTokenFilter 호출 처리 -> 다른 JWT 관련 필터들의 동작 이전에 할 수 있도록 TokenCheckFilter 앞에 배치함
+        http.addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil), TokenCheckFilter.class);
+
+
 
         log.info("------------ configure ------------");
 
@@ -106,3 +110,4 @@ public class CustomSecurityConfig {
     }
 
 }
+
