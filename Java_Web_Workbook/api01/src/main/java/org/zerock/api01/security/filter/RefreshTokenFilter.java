@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -16,6 +17,8 @@ import org.zerock.api01.util.JWTUtil;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
 
 @Log4j2
@@ -59,8 +62,46 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         Map<String, Object> refreshClaims = null;
 
         try {
-            refreshClaims = checkRefreshToken(refreshToken);
+            refreshClaims = checkRefreshToken(refreshToken); // refreshToken의 유효성을 검사 ->토큰이 유효한지, 변조되지 않았는지 등을 확인하여 저장
             log.info(refreshClaims);
+
+            //Refresh Token의 유효 시간이 얼마 남지 않은 경우
+            Integer exp = (Integer)refreshClaims.get("exp");//'exp'(만료 시간)를 가져와 exp 변수에 저장
+
+            // exp 값을 밀리초 단위로 변환하여 expTime 변수에 Date 객체로 저장
+            Date expTime = new Date(Instant.ofEpochMilli(exp).toEpochMilli()*1000);
+
+            //new Date(System.currentTimeMillis());: 현재 시간을 current 변수에 Date 객체로 저장
+            Date current = new Date(System.currentTimeMillis());
+
+            //만료 시간과 현재 시간의 간격 계산
+            //만일 3일 미만인 경우에는 Refresh Token도 다시 생성
+            long gapTime = (expTime.getTime() - current.getTime());
+
+            log.info("------------------------------------");
+            log.info("current: "+current);
+            log.info("expTime: "+ expTime);
+            log.info("gap: " + gapTime);
+
+            //refreshClaims에서 사용자 식별자를 나타내는 'mid'를 가져와 mid 변수에 저장
+            String mid = (String)refreshClaims.get("mid");
+
+            //사용자 식별자 mid를 포함하는 새로운 액세스 토큰을 생성합니다. 유효 기간은 1일
+            //이 상태까지 오면 무조건 AccessToken은 새로 생성
+            String accessTokenValue = jwtUtil.generateToken(Map.of("mid",mid),1);
+
+            String refreshTokenValue = tokens.get("refreshToken"); // 기존에 저장된 tokens 컬렉션에서 리프레시 토큰 값을 가져옴
+
+            //만일 RefreshToken이 3일도 안남았다면...
+            if(gapTime < (1000 * 60 * 60 * 24 * 3)){
+                log.info("new Refresh Token required... ");
+                refreshTokenValue = jwtUtil.generateToken(Map.of("mid", mid),30);
+            }
+
+            log.info("Refresh Token result.................");
+            log.info("accessToken: "+accessTokenValue);
+            log.info("refreshToken: "+ refreshTokenValue);
+
         }catch (RefreshTokenException refreshTokenException){
             refreshTokenException.sendResponseError(response);
         }
