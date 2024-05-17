@@ -10,10 +10,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.zerock.api01.security.exception.RefreshTokenException;
 import org.zerock.api01.util.JWTUtil;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -102,6 +104,8 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             log.info("accessToken: "+accessTokenValue);
             log.info("refreshToken: "+ refreshTokenValue);
 
+            sendTokens(accessTokenValue,refreshTokenValue,response);
+
         }catch (RefreshTokenException refreshTokenException){
             refreshTokenException.sendResponseError(response);
         }
@@ -144,5 +148,19 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             new RefreshTokenException(RefreshTokenException.ErrorCase.NO_REFRESH);
         }
         return null;
+    }
+
+    private void sendTokens(String accessTokenValue, String refreshTokenValue, HttpServletResponse response){
+
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        Gson gson = new Gson();
+
+        String jsonStr = gson.toJson(Map.of("accessToken",accessTokenValue,"refreshToken",refreshTokenValue));
+
+        try {
+            response.getWriter().println(jsonStr);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
