@@ -17,6 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.zerock.api01.security.APIUserDetailsService;
 import org.zerock.api01.security.filter.APILoginFilter;
 import org.zerock.api01.security.filter.RefreshTokenFilter;
@@ -25,6 +28,8 @@ import org.zerock.api01.security.handler.APILoginSuccessHandler;
 import org.zerock.api01.util.JWTUtil;
 
 import java.security.Security;
+import java.util.Arrays;
+
 @Configuration
 @Log4j2
 @EnableWebSecurity
@@ -101,8 +106,25 @@ public class CustomSecurityConfig {
 
         http.sessionManagement(config-> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); //세션을 사용하지 않음
 
+        //cors 설정 http.cors() 메서드는 Spring Security의 CORS 설정을 활성화
+        http.cors(httpSecurityCorsConfigurer -> {
+            httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
+        });
 
         return http.build();
+    }
+
+    //CORS 설정을 제공
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource(){
+        CorsConfiguration corsConfiguration = new CorsConfiguration(); // CORS 정책을 정의하는 데 사용되는 CorsConfiguration 객체 생성
+        corsConfiguration.setAllowedOriginPatterns(Arrays.asList("*")); //모든 Origin(출처)을 허용하도록 설정 - 주로 개발 및 테스트 환경에서 사용됨
+        corsConfiguration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST","PUT","DELETE")); //허용할 HTTP 메서드들 설정
+        corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization","Cache-Control","Content-Type")); // 클라이언트가 보낼 수 있는 HTTP 요청 헤더 설정
+        corsConfiguration.setAllowCredentials(true);//자격 증명(쿠키, 인증 정보 등)을 포함한 요청을 허용하도록 설정
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();//URL 패턴별로 CORS 설정을 적용하는 데 사용되는 UrlBasedCorsConfigurationSource 객체 생성
+        source.registerCorsConfiguration("/**", corsConfiguration);//모든 경로(/**)에 대해 위에서 정의한 CORS 설정 적용
+        return source; //CORS 설정 소스 반환
     }
 
     private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil){
