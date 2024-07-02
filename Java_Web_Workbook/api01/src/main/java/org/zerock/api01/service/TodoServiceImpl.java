@@ -25,4 +25,11 @@ public class TodoServiceImpl implements TodoService{
 
         return tno;
     }
+
+    @Override
+    public TodoDTO read(Long tno) {
+        Todo todo = todoRepository.findById(tno).orElseThrow();
+
+        return modelMapper.map(todo, TodoDTO.class);
+    }
 }
