@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Log4j2
 @RequiredArgsConstructor
-public class TokenCheckFilter extends OncePerRequestFilter {
+public class TokenCheckFilter extends OncePerRequestFilter {//OncePerRequestFilter는 하나의 요청에 대해 한번씩 동작하는 필터
 
     private final JWTUtil jwtUtil;
 

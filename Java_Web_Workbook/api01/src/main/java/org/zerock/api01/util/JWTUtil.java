@@ -39,8 +39,8 @@ public class JWTUtil {
 
         // JWT 토큰 생성: 설정한 헤더, 페이로드, 발행 시간, 만료 시간, 서명 알고리즘, 비밀키를 사용하여 JWT 토큰을 생성
         String jwtStr = Jwts.builder()
-                .setHeader(headers)
-                .setClaims(payloads)
+                .setHeader(headers)//signWith 작성 시 기본적으로 생성되긴 함.(없어도 되는 부분)
+                .setClaims(payloads)//claim이 여러 개일 땐 이 방식, 하나일 땐 setSubject(payload)를 사용할 수도 있음.
                 .setIssuedAt(Date.from(ZonedDateTime.now().toInstant()))    // 현재 시간을 발행 시간으로 설정
                 .setExpiration(Date.from(ZonedDateTime.now().plusMinutes(time).toInstant())) //현재 시간으로부터 'time'분 후를 만료 시간으로 설정
                 .signWith(SignatureAlgorithm.HS256, key.getBytes()) // HS256 알고리즘과 비밀키를 사용하여 JWT 토큰에 서명

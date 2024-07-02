@@ -65,13 +65,16 @@ dependencies {
 	implementation group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.1-api', version: '1.0.0.Final'
 
 
-	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+	//querydsl
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
 
 	annotationProcessor(
-			"javax.persistence:javax.persistence-api",
-			"javax.annotation:javax.annotation-api",
-			"com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
-	)
+
+			"jakarta.persistence:jakarta.persistence-api",
+
+			"jakarta.annotation:jakarta.annotation-api",
+
+			"com.querydsl:querydsl-apt:${queryDslVersion}:jakarta")
 
 
 
@@ -88,3 +91,6 @@ sourceSets {
 			}
 	}
 }
+
+//compileJava할 때 clean을 하고 실행하도록 함.
+compileJava.dependsOn('clean')

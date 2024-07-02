@@ -48,7 +48,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
         //전송된 JSON에서 accessToken과 refreshToken을 얻어온다.
         Map<String, String> tokens = parseRequestJSON(request);     //요청 본문에 포함된 JSON 데이터를 파싱하여 Map객체로 변환 ->
-
+        log.info(tokens);
         String accessToken = tokens.get("accessToken");
         String refreshToken = tokens.get("refreshToken");
 

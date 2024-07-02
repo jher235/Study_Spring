@@ -77,7 +77,7 @@ public class CustomSecurityConfig {
         http.authenticationManager(authenticationManager);
 
         //APILoginFilter - 특정 경로에 대한 요청을 처리하기 위한 커스텀 필터 설정
-        APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
+        APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");//'/generateToken'경로에 대한 커스텀 필터
         apiLoginFilter.setAuthenticationManager(authenticationManager); //생성된 필터에 AuthenticationManager를 설정 -로그인 시도시 인증과정 처리
 
         //APILoginSuccessHandler
@@ -122,6 +122,7 @@ public class CustomSecurityConfig {
         corsConfiguration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST","PUT","DELETE")); //허용할 HTTP 메서드들 설정
         corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization","Cache-Control","Content-Type")); // 클라이언트가 보낼 수 있는 HTTP 요청 헤더 설정
         corsConfiguration.setAllowCredentials(true);//자격 증명(쿠키, 인증 정보 등)을 포함한 요청을 허용하도록 설정
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();//URL 패턴별로 CORS 설정을 적용하는 데 사용되는 UrlBasedCorsConfigurationSource 객체 생성
         source.registerCorsConfiguration("/**", corsConfiguration);//모든 경로(/**)에 대해 위에서 정의한 CORS 설정 적용
         return source; //CORS 설정 소스 반환

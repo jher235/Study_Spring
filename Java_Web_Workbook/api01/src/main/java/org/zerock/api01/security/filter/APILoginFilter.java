@@ -17,7 +17,7 @@ import java.io.Reader;
 import java.util.Map;
 
 @Log4j2
-public class APILoginFilter extends AbstractAuthenticationProcessingFilter {
+public class APILoginFilter extends AbstractAuthenticationProcessingFilter {//인증과 관련된 커스텀 필터를 위해 이걸 상속
 
     //AbstractAuthenticationProcessingFilter생성자에 defaultFilterProcessUtl를 파라미터로 제공하며 생성
     public APILoginFilter(String defaultFilterProcessUrl){
