@@ -19,10 +19,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PageRequestDTO {
+    private static int PAGE = 1;
+    private static int SIZE = 10;
+
     @Builder.Default
-    private int page = 1;
+    private int page = PAGE;
     @Builder.Default
-    private int size = 10;
+    private int size = SIZE;
     private String type; // 검색의 종류 t,c, w, tc, tw, twc
     private String keyword;
 
