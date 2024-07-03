@@ -9,7 +9,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.zerock.api01.security.APIUserDetailsService;
 import org.zerock.api01.security.exception.AccessTokenException;
 import org.zerock.api01.util.JWTUtil;
 
@@ -20,6 +24,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TokenCheckFilter extends OncePerRequestFilter {//OncePerRequestFilter는 하나의 요청에 대해 한번씩 동작하는 필터
 
+    private final APIUserDetailsService apiUserDetailsService;
     private final JWTUtil jwtUtil;
 
     @Override
@@ -37,7 +42,23 @@ public class TokenCheckFilter extends OncePerRequestFilter {//OncePerRequestFilt
         log.info("JWTUtil: " + jwtUtil);
 
         try {
-            validateAccessToken(request);
+            Map<String, Object> payload =  validateAccessToken(request);
+
+            //mid
+            String mid = (String) payload.get("mid");
+
+            log.info("mid: "+ mid);
+
+            UserDetails userDetails = apiUserDetailsService.loadUserByUsername(mid); //mid에 해당하는 UserDetails 가져옴
+
+            // UserDetails 객체를 기반으로 UsernamePasswordAuthenticationToken을 생성, 사용자의 인증 정보를 포함하는 토큰
+            // 비밀번호는 이미 검증되었기 때문에 null. userDetails.getAuthorities()로 사용자의 권한 정보도 포함함
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null,userDetails.getAuthorities());
+
+            // authenticationToken을 SecurityContextHolder에 설정. Spring Security는 SecurityContextHolder에 저장된 인증 정보를 기반으로 접근을 제어함
+            //이를 통해 컨트롤러나 서비스에서 @PreAuthorize 어노테이션을 사용할 수 있음
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
             filterChain.doFilter(request, response);
         }catch (AccessTokenException accessTokenException){
             accessTokenException.sendResponseError(response);
