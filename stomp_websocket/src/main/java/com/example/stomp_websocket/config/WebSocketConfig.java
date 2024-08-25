@@ -22,7 +22,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {// STOMP 프로토콜을 위한 WebSocket 엔드포인트 등록
-        //클라이언트가 WebSocket에 연결할 수 있는 엔드포인트에 '/gs-guide-websocket' 경로 추가.
-        registry.addEndpoint("/gs-guide-websocket");
+        //클라이언트가 WebSocket에 연결할 수 있는 엔드포인트에 '/ws' 경로 추가.
+        registry.addEndpoint("/ws");
     }
 }
