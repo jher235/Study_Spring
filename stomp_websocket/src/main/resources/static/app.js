@@ -14,6 +14,15 @@ stompClient.onConnect = (frame) => {
     });
 };
 
+privateStompClient.onConnect = (frame) => {
+    const roomId = localStorage.getItem("roomId")
+    setPrivateConnect(true);
+    console.log('PrivateConnected: ' + frame);
+    stompClient.subscribe(`/topic/`+roomId, (message) => {
+        showPrivateMessage(JSON.parse(message.body).content);
+    });
+};
+
 stompClient.onWebSocketError = (error) => {
     console.error('Error with websocket', error);
 };
@@ -52,7 +61,8 @@ function privateConnect(roomId) {
     // const privateStompClient = new StompJs.Clients({
     //     brokerURL: `ws://localhost:8080/ws/${roomid}`
     // })
-    privateStompClient.brokerURL(`ws://localhost:8080/ws/${roomId}`);
+    // privateStompClient.brokerURL(`ws://localhost:8080/ws/${roomId}`);
+    privateStompClient.brokerURL(`ws://localhost:8080/ws`);
     privateStompClient.activate()
 }
 
@@ -100,7 +110,9 @@ $(function () {
     $( "#connect" ).click(() => connect());
     $( "#disconnect" ).click(() => disconnect());
     $( "#send" ).click(() => sendName());
-    $( "#private-connect" ).click((roomId) => privateConnect(roomId));
+    $( "#private-connect" ).click(() => {
+        privateConnect($("room-id").val())
+    });
     $( "#private-disconnect" ).click(() => privateDisconnect());
     $( "#private-send" ).click(() => sendPrivateMessage());
     // $()
