@@ -47,6 +47,43 @@
             </table>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+<!--                    <label for="connect">WebSocket connection:</label>-->
+                    <label for="name">Room-Id</label>
+                    <input type="text" id="room-id" class="form-control" placeholder="Private RoomId here...">
+                    <button id="private-connect" class="btn btn-default" type="submit">Connect</button>
+                    <button id="private-disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="name">Message:</label>
+                    <input type="text" id="message" class="form-control" placeholder="Typing your message here...">
+                </div>
+                <button id="private-send" class="btn btn-default" type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="private-conversation" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Greetings</th>
+                </tr>
+                </thead>
+                <tbody id="messages">
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
 </html>

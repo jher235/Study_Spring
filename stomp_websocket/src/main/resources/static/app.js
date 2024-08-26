@@ -1,7 +1,10 @@
 const stompClient = new StompJs.Client({
-    // brokerURL: 'ws://localhost:8080/ws'
-    brokerURL: 'http://localhost:8080/ws'
+    brokerURL: 'ws://localhost:8080/ws'
+    // brokerURL: 'http://localhost:8080/ws'
 });
+
+const privateStompClient = new StompJs.Clients({
+})
 
 stompClient.onConnect = (frame) => {
     setConnected(true);
@@ -20,6 +23,18 @@ stompClient.onStompError = (frame) => {
     console.error('Additional details: ' + frame.body);
 };
 
+function setPrivateConnect(connected, id){
+    $("#private-connect").prop("disabled", connected);
+    $("#private-disconnect").prop("disabled", !connected);
+    if (connected) {
+        $("#private-conversation").show();
+    }
+    else {
+        $("#private-conversation").hide();
+    }
+    $("#private-greetings").html("");
+}
+
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
     $("#disconnect").prop("disabled", !connected);
@@ -32,8 +47,23 @@ function setConnected(connected) {
     $("#greetings").html("");
 }
 
+function privateConnect(roomId) {
+    localStorage.setItem("roomId", roomId);
+    // const privateStompClient = new StompJs.Clients({
+    //     brokerURL: `ws://localhost:8080/ws/${roomid}`
+    // })
+    privateStompClient.brokerURL(`ws://localhost:8080/ws/${roomId}`);
+    privateStompClient.activate()
+}
+
 function connect() {
     stompClient.activate();
+}
+
+function privateDisconnect() {
+    privateStompClient.deactivate();
+    setPrivateConnect(false);
+    console.log("Disconnected");
 }
 
 function disconnect() {
@@ -49,8 +79,20 @@ function sendName() {
     });
 }
 
+function sendPrivateMessage(){
+    const roomId = localStorage.getItem("roomId")
+    privateStompClient.publish({
+        destination: "/app/message",
+        body: JSON.stringify({'message': $("#message").val()})
+    });
+}
+
 function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
+}
+
+function showPrivateMessage(message) {
+    $("#messages").append("<tr><td>" + message + "</td></tr>");
 }
 
 $(function () {
@@ -58,4 +100,8 @@ $(function () {
     $( "#connect" ).click(() => connect());
     $( "#disconnect" ).click(() => disconnect());
     $( "#send" ).click(() => sendName());
+    $( "#private-connect" ).click((roomId) => privateConnect(roomId));
+    $( "#private-disconnect" ).click(() => privateDisconnect());
+    $( "#private-send" ).click(() => sendPrivateMessage());
+    // $()
 });

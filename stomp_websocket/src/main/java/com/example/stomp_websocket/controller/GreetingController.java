@@ -15,4 +15,5 @@ public class GreetingController {
     public Greeting greeting(HelloMessage message) throws Exception{
         return new Greeting("안녕, "+ HtmlUtils.htmlEscape(message.getName())+ "~");//HTML 특수 문자를 이스케이프 처리함.
     }
+
 }
