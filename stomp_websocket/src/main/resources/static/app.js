@@ -1,15 +1,17 @@
 const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8080/ws'
-    // brokerURL: 'http://localhost:8080/ws'
 });
 
-const privateStompClient = new StompJs.Clients({
+//구독하는 부분에서 공용, 프라이빗 구독을 나누므로 brokerURL은 하나만 있어도 된다. 이건 그냥 테스트 용.
+const privateStompClient = new StompJs.Client({
+    brokerURL: 'ws://localhost:8080/ws'
 })
 
 stompClient.onConnect = (frame) => {
     setConnected(true);
     console.log('Connected: ' + frame);
     stompClient.subscribe('/topic/greetings', (greeting) => {
+        console.log(greeting)
         showGreeting(JSON.parse(greeting.body).content);
     });
 };
@@ -18,8 +20,11 @@ privateStompClient.onConnect = (frame) => {
     const roomId = localStorage.getItem("roomId")
     setPrivateConnect(true);
     console.log('PrivateConnected: ' + frame);
-    stompClient.subscribe(`/topic/`+roomId, (message) => {
-        showPrivateMessage(JSON.parse(message.body).content);
+    console.log(roomId)
+    // stompClient.subscribe(`/topic/`+roomId, (message) => {
+    privateStompClient.subscribe(`/topic/${roomId}`, (message) => {
+        showPrivateMessage(message.body);
+        // showPrivateMessage(JSON.parse(message.body).content);
     });
 };
 
@@ -41,7 +46,7 @@ function setPrivateConnect(connected, id){
     else {
         $("#private-conversation").hide();
     }
-    $("#private-greetings").html("");
+    $("#messages").html("");
 }
 
 function setConnected(connected) {
@@ -58,11 +63,6 @@ function setConnected(connected) {
 
 function privateConnect(roomId) {
     localStorage.setItem("roomId", roomId);
-    // const privateStompClient = new StompJs.Clients({
-    //     brokerURL: `ws://localhost:8080/ws/${roomid}`
-    // })
-    // privateStompClient.brokerURL(`ws://localhost:8080/ws/${roomId}`);
-    privateStompClient.brokerURL(`ws://localhost:8080/ws`);
     privateStompClient.activate()
 }
 
@@ -92,9 +92,11 @@ function sendName() {
 function sendPrivateMessage(){
     const roomId = localStorage.getItem("roomId")
     privateStompClient.publish({
-        destination: "/app/message",
-        body: JSON.stringify({'message': $("#message").val()})
+        destination: "/app/message/"+roomId,
+        body: JSON.stringify({'content': $("#message").val()})
     });
+    console.log("/app/message/"+roomId)
+    console.log(JSON.stringify({'content': $("#message").val()}))
 }
 
 function showGreeting(message) {
@@ -111,9 +113,8 @@ $(function () {
     $( "#disconnect" ).click(() => disconnect());
     $( "#send" ).click(() => sendName());
     $( "#private-connect" ).click(() => {
-        privateConnect($("room-id").val())
+        privateConnect($("#room-id").val())
     });
     $( "#private-disconnect" ).click(() => privateDisconnect());
     $( "#private-send" ).click(() => sendPrivateMessage());
-    // $()
 });
