@@ -4,11 +4,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity // 이 클래스가 스프링 시큐리티에서도 관리가 됨.
 public class SecurityConfig {
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){ //BCrypt 해시 방식으로 암호화를 하기 위해 빈으로 등록
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
