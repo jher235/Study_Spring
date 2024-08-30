@@ -1,6 +1,5 @@
 package com.example.testsecurity.entity.vo;
 
 public enum Role {
-    USER, ADMIN;
-
+    ROLE_USER, ROLE_ADMIN;  //스프링 시큐리티에서는 'ROLE_' 접두사를 붙여줘야 함.
 }

@@ -1,6 +1,6 @@
 package com.example.testsecurity.service;
 
-import com.example.testsecurity.dto.JoinDto;
+import com.example.testsecurity.dto.request.JoinDto;
 import com.example.testsecurity.entity.User;
 import com.example.testsecurity.entity.vo.Role;
 import com.example.testsecurity.repository.UserRepository;
@@ -19,14 +19,14 @@ public class AuthService {
 
         //db에 동일한 username을 지닌 회원 여부 검증.
         if(userRepository.existsByUsername(joinDto.getUsername())){
-            return;
+            return; //원래는 예외처리가 필요
         }
 
         User user = new User();
 
         user.setUsername(joinDto.getUsername());
         user.setPassword(passwordEncoder.encode(joinDto.getPassword())); //해쉬화 후 저장.
-        user.setRole(Role.USER);
+        user.setRole(Role.ROLE_USER);
 
         userRepository.save(user);
     }
