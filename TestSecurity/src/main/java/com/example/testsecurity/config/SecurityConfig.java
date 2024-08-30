@@ -28,8 +28,8 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests((auth)->auth //특정 경로에 요청을 허용, 거부할 수 있음. 람다식으로 작성.
                         .requestMatchers("/","/login", "/loginProc", "/join", "/joinProc").permitAll() //requestMatchers는 특정한 경로의 요청에 대해 작업을 진행하려 할 때 사용.
-                        .requestMatchers("/admin").hasRole(Role.ADMIN.name())
-                        .requestMatchers("/my/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name()) //경로에는 와일드카드를 통해 하위페이지를 포함. 룰은 명시된 룰 중 하나라면 접근 가능.
+                        .requestMatchers("/admin").hasRole(Role.ROLE_ADMIN.getRoleName())
+                        .requestMatchers("/my/**").hasAnyRole(Role.ROLE_ADMIN.getRoleName(), Role.ROLE_USER.getRoleName()) //경로에는 와일드카드를 통해 하위페이지를 포함. 룰은 명시된 룰 중 하나라면 접근 가능.
                         .anyRequest().authenticated() //이 외 모든 요청에 대하여 설정.
 //                        .anyRequest().denyAll() //사용하지 않는 모든 경로는 아무도 접근하지 못하도록 할 수도 있다.
                 );
