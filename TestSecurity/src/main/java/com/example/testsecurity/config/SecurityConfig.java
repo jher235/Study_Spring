@@ -43,6 +43,15 @@ public class SecurityConfig {
         httpSecurity
                 .csrf((auth)-> auth.disable()); //개발 환경에서만 위변조방지 토큰을 비활성화
 
+        httpSecurity
+                .sessionManagement((auth)-> auth
+                        .maximumSessions(1) //하나의 아이디에서 최대로 허용하는 동시 접속 로그인 수
+                        .maxSessionsPreventsLogin(true)); //최대 다중 로그인 수를 초과할 경우 처리방법 설정 - true면 새로운 로그인을 차단. false면 기존에 로그인 되어 있는 것을 하나 로그아웃
+
+        httpSecurity
+                .sessionManagement((auth) -> auth
+                        .sessionFixation().changeSessionId()); // 세션 고정 보호.
+
         //동작 순서가 상단부터 동작되므로 순서에 유의해야 한다.
         return httpSecurity.build();//SecurityFilterChain를 설정한 후 빌드해서 리턴해주는 것.
     }

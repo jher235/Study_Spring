@@ -2,12 +2,18 @@ package com.example.testsecurity.dto;
 
 import com.example.testsecurity.entity.User;
 import com.example.testsecurity.entity.vo.Role;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Setter
+@Getter
+@EqualsAndHashCode //다중 로그인 설정을 할 때 정상적인 비교를 통해 중복 유저를 찾기 위해 이게 필요했다. UserDetails구현체와 User엔티티 이 두 클래스에 적용.
 public class CustomUserDetails implements UserDetails {
     private User user;
 
