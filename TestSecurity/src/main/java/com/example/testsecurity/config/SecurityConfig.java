@@ -5,18 +5,50 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity // 이 클래스가 스프링 시큐리티에서도 관리가 됨.
 public class SecurityConfig {
 
+    //세션 관리를 위한 SessionRegistry 구현체 빈 등록
+    @Bean
+    public SessionRegistry sessionRegistry(){
+        return new SessionRegistryImpl();
+    }
+
+    //BCrypt방식 password 암호화를 위한 encoder 빈 등록
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){ //BCrypt 해시 방식으로 암호화를 하기 위해 빈으로 등록
         return new BCryptPasswordEncoder();
     }
 
+    //DB 연결 없이 인메모리 방식을 사용할 때 - 굳이 사용하지 않아도 될 것 같다..
+    @Bean
+    public UserDetailsService userDetailsService(){
+        UserDetails user1 = User.builder()
+                .username("user1")
+                .password(bCryptPasswordEncoder().encode("1234"))
+                .roles(Role.ROLE_ADMIN.getRoleName())
+                .build();
+
+        UserDetails user2 = User.builder()
+                .username("user2")
+                .password(bCryptPasswordEncoder().encode("1234"))
+                .roles(Role.ROLE_ADMIN.getRoleName())
+                .build();
+
+        return new InMemoryUserDetailsManager(user1, user2);
+    }
+
+    //인가를 수행하는 Security FilterChain 구현체.
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
 
@@ -45,11 +77,13 @@ public class SecurityConfig {
 
         httpSecurity
                 .logout((auth)-> auth.logoutUrl("/logout")  //logout 요청이 들어오는 경로 설정
+                        .invalidateHttpSession(true) // 현재 사용자의 HTTP 세션 무효화
+                        .clearAuthentication(true) // 현재 사용자의 인증 정보 삭제
                         .logoutSuccessUrl("/"));    //logout 성공 시 리다이렉트 경로 설정
 
         httpSecurity
                 .sessionManagement((auth)-> auth
-                        .maximumSessions(2) //하나의 아이디에서 최대로 허용하는 동시 접속 로그인 수
+                        .maximumSessions(1) //하나의 아이디에서 최대로 허용하는 동시 접속 로그인 수
                         .maxSessionsPreventsLogin(true)); //최대 다중 로그인 수를 초과할 경우 처리방법 설정 - true면 새로운 로그인을 차단. false면 기존에 로그인 되어 있는 것을 하나 로그아웃
 
         httpSecurity
