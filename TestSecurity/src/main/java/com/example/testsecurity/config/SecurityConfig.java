@@ -39,13 +39,24 @@ public class SecurityConfig {
     @Bean
     public RoleHierarchy roleHierarchy() { //계층권한을 지정
 
-        RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
+//        RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
+//
+//        //이는 ADMIN > STAFF > USER의 순으로 권한이 높은 상태이므로 STAFF권한이 필요한 페이지 접근 시 USER는 접근 불가, STAFF, ADMIN은 접근이 가능하다.
+//        hierarchy.setHierarchy("ROLE_ADMIN > ROLE_STAFF\n" +
+//                "ROLE_STAFF > ROLE_USER");
+//
+//        return hierarchy;
 
-        //이는 ADMIN > STAFF > USER의 순으로 권한이 높은 상태이므로 STAFF권한이 필요한 페이지 접근 시 USER는 접근 불가, STAFF, ADMIN은 접근이 가능하다.
-        hierarchy.setHierarchy("ROLE_ADMIN > ROLE_STAFF\n" +
-                "ROLE_STAFF > ROLE_USER");
+        //6.3.x 이후 deprecated된 RoleHierarchy 해결 아래 2가지 방법이 모두 유효함.
+        return RoleHierarchyImpl.fromHierarchy("""
+                ROLE_ADMIN > ROLE_STAFF
+                ROLE_STAFF > ROLE_USER
+                """);
 
-        return hierarchy;
+//        return RoleHierarchyImpl.withDefaultRolePrefix()
+//                .role("ADMIN").implies("STAFF")
+//                .role("STAFF").implies("USER")
+//                .build();
     }
 
 
