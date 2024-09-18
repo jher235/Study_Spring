@@ -3,6 +3,8 @@ package com.example.testsecurity.config;
 import com.example.testsecurity.entity.vo.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -34,6 +36,17 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public RoleHierarchy roleHierarchy() { //계층권한을 지정
+
+        RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
+
+        //이는 ADMIN > STAFF > USER의 순으로 권한이 높은 상태이므로 STAFF권한이 필요한 페이지 접근 시 USER는 접근 불가, STAFF, ADMIN은 접근이 가능하다.
+        hierarchy.setHierarchy("ROLE_ADMIN > ROLE_STAFF\n" +
+                "ROLE_STAFF > ROLE_USER");
+
+        return hierarchy;
+    }
 
 
     //인가를 수행하는 Security FilterChain 구현체.
@@ -49,7 +62,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth)->auth //특정 경로에 요청을 허용, 거부할 수 있음. 람다식으로 작성.
                         .requestMatchers("/","/login", "/loginProc", "/join", "/joinProc").permitAll() //requestMatchers는 특정한 경로의 요청에 대해 작업을 진행하려 할 때 사용.
                         .requestMatchers("/admin").hasRole(Role.ROLE_ADMIN.getRoleName())
-                        .requestMatchers("/my/**").hasAnyRole(Role.ROLE_ADMIN.getRoleName(), Role.ROLE_USER.getRoleName()) //경로에는 와일드카드를 통해 하위페이지를 포함. 룰은 명시된 룰 중 하나라면 접근 가능.
+                        .requestMatchers("/my/**").hasAnyRole(Role.ROLE_STAFF.getRoleName()) //경로에는 와일드카드를 통해 하위페이지를 포함. 룰은 명시된 룰 중 하나라면 접근 가능.
                         .anyRequest().authenticated() //이 외 모든 요청에 대하여 설정.
 //                        .anyRequest().denyAll() //사용하지 않는 모든 경로는 아무도 접근하지 못하도록 할 수도 있다.
                 );
