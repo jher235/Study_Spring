@@ -3,6 +3,7 @@ package com.example.testsecurity.config;
 import com.example.testsecurity.entity.vo.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.session.SessionRegistry;
@@ -13,6 +14,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.server.authentication.logout.DelegatingServerLogoutHandler;
+import org.springframework.security.web.server.authentication.logout.SecurityContextServerLogoutHandler;
+import org.springframework.security.web.server.authentication.logout.WebSessionServerLogoutHandler;
 
 @Configuration
 @EnableWebSecurity // 이 클래스가 스프링 시큐리티에서도 관리가 됨.
@@ -30,23 +34,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    //DB 연결 없이 인메모리 방식을 사용할 때 - 굳이 사용하지 않아도 될 것 같다..
-    @Bean
-    public UserDetailsService userDetailsService(){
-        UserDetails user1 = User.builder()
-                .username("user1")
-                .password(bCryptPasswordEncoder().encode("1234"))
-                .roles(Role.ROLE_ADMIN.getRoleName())
-                .build();
 
-        UserDetails user2 = User.builder()
-                .username("user2")
-                .password(bCryptPasswordEncoder().encode("1234"))
-                .roles(Role.ROLE_ADMIN.getRoleName())
-                .build();
-
-        return new InMemoryUserDetailsManager(user1, user2);
-    }
 
     //인가를 수행하는 Security FilterChain 구현체.
     @Bean
@@ -66,11 +54,17 @@ public class SecurityConfig {
 //                        .anyRequest().denyAll() //사용하지 않는 모든 경로는 아무도 접근하지 못하도록 할 수도 있다.
                 );
 
+        //formLogin 방식
+//        httpSecurity
+//                .formLogin((auth) -> auth.loginPage("/login") //폼 기반 로그인 기능. 사용자에게 보여줄 로그인 페이지 URL 지정
+//                        .loginProcessingUrl("/loginProc") //로그인 폼의 제출 URL 설정. "/login"에서 로그인하면 "/loginProc"로 전송되어 인증 처리됨
+//                        .permitAll()  //경로에 아무나 들어올 수 있음
+//                );
+
+        //httpBasic 방식
         httpSecurity
-                .formLogin((auth) -> auth.loginPage("/login") //폼 기반 로그인 기능. 사용자에게 보여줄 로그인 페이지 URL 지정
-                        .loginProcessingUrl("/loginProc") //로그인 폼의 제출 URL 설정. "/login"에서 로그인하면 "/loginProc"로 전송되어 인증 처리됨
-                        .permitAll()  //경로에 아무나 들어올 수 있음
-                );
+                .httpBasic(Customizer.withDefaults()); //HTTP기본 인증 활성화
+
 
 //        httpSecurity
 //                .csrf((auth)-> auth.disable()); //개발 환경에서만 위변조방지 토큰을 비활성화
@@ -79,7 +73,7 @@ public class SecurityConfig {
                 .logout((auth)-> auth.logoutUrl("/logout")  //logout 요청이 들어오는 경로 설정
                         .invalidateHttpSession(true) // 현재 사용자의 HTTP 세션 무효화
                         .clearAuthentication(true) // 현재 사용자의 인증 정보 삭제
-                        .logoutSuccessUrl("/"));    //logout 성공 시 리다이렉트 경로 설정
+                        .logoutSuccessUrl("/"));  //logout 성공 시 리다이렉트 경로 설정
 
         httpSecurity
                 .sessionManagement((auth)-> auth
